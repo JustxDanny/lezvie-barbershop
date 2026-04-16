@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ЛЕЗВИЕ — Админ-панель галереи</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-bg:       #F2F0ED;
+      --color-bg-light: #FAFAF8;
+      --color-dark:     #2D2D2D;
+      --color-accent:   #C17A56;
+      --color-accent-hover: #a8643e;
+      --color-text:     #2D2D2D;
+      --color-text-muted: #6b6b6b;
+      --font-heading: 'Oswald', sans-serif;
+      --font-body:    'Lora', serif;
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .admin-header {
+      width: 100%;
+      background-color: var(--color-bg-light);
+      border-bottom: 1px solid rgba(45,45,45,0.08);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header__logo {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: 0.15em;
+    }
+
+    .admin-header__back {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: opacity 0.3s;
+    }
+
+    .admin-header__back:hover {
+      opacity: 0.7;
+    }
+
+    .admin-container {
+      width: 100%;
+      max-width: 960px;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 2rem;
+    }
+
+    /* Password gate */
+    .gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .gate__label {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+    }
+
+    .gate__input {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      padding: 12px 20px;
+      border: 1px solid rgba(45,45,45,0.15);
+      background: var(--color-bg-light);
+      width: 280px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .gate__input:focus {
+      border-color: var(--color-accent);
+    }
+
+    .gate__btn {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 12px 32px;
+      background-color: var(--color-accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-height: 44px;
+    }
+
+    .gate__btn:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    .gate__error {
+      color: #c0392b;
+      font-size: 0.9rem;
+      min-height: 1.4em;
+    }
+
+    /* Panel */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed rgba(45,45,45,0.2);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      transition: border-color 0.3s, background-color 0.3s;
+      cursor: pointer;
+    }
+
+    .upload-zone.dragover {
+      border-color: var(--color-accent);
+      background-color: rgba(193, 122, 86, 0.06);
+    }
+
+    .upload-zone__text {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .upload-zone__btn {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      background-color: var(--color-dark);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-height: 44px;
+    }
+
+    .upload-zone__btn:hover {
+      background-color: #444;
+    }
+
+    /* Thumbnail grid */
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .thumb-grid__item {
+      position: relative;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      background-color: var(--color-bg-light);
+    }
+
+    .thumb-grid__item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-grid__delete {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      background-color: rgba(192, 57, 43, 0.85);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      min-width: 44px;
+      min-height: 44px;
+      /* Expand click area but keep visual small */
+      margin: -6px -6px 0 0;
+      padding: 6px;
+    }
+
+    .thumb-grid__item:hover .thumb-grid__delete {
+      opacity: 1;
+    }
+
+    .thumb-grid__order {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background-color: rgba(45,45,45,0.75);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      letter-spacing: 0.1em;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* Hidden file input */
+    #fileInput { display: none; }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <span class="admin-header__logo">ЛЕЗВИЕ</span>
+    <a href="index.html" class="admin-header__back">&larr; На сайт</a>
+  </header>
+
+  <div class="admin-container">
+
+    <!-- Password Gate -->
+    <div class="gate" id="gate">
+      <h1>АДМИН-ПАНЕЛЬ</h1>
+      <label class="gate__label" for="password">Введите пароль</label>
+      <input type="password" class="gate__input" id="password" autocomplete="off" placeholder="Пароль">
+      <button class="gate__btn" id="loginBtn">Войти</button>
+      <p class="gate__error" id="gateError"></p>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="panel" id="panel">
+      <h1>ГАЛЕРЕЯ — УПРАВЛЕНИЕ</h1>
+
+      <div class="upload-zone" id="uploadZone">
+        <p class="upload-zone__text">Перетащите изображения сюда или нажмите кнопку</p>
+        <button class="upload-zone__btn" id="uploadBtn">Выбрать файлы</button>
+        <input type="file" id="fileInput" accept="image/*" multiple>
+      </div>
+
+      <div class="thumb-grid" id="thumbGrid"></div>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        Галерея пуста. Загрузите изображения выше.
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
