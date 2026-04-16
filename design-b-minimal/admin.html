@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ЛЕЗВИЕ — Админ-панель галереи</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Password Gate -->
+  <div class="admin-gate" id="adminGate">
+    <h1 class="admin-gate__title">ЛЕЗВИЕ — АДМИН</h1>
+    <form class="admin-gate__form" id="gateForm">
+      <input type="password" class="admin-gate__input" id="gatePassword" placeholder="Пароль" autocomplete="off" required>
+      <button type="submit" class="btn btn--red">Войти</button>
+    </form>
+    <p class="admin-gate__error" id="gateError"></p>
+  </div>
+
+  <!-- Admin Panel (hidden until auth) -->
+  <div class="admin-panel" id="adminPanel" hidden>
+    <div class="admin-panel__header">
+      <h1 class="admin-panel__title">ГАЛЕРЕЯ — УПРАВЛЕНИЕ</h1>
+      <a href="index.html" class="admin-panel__back">&larr; Вернуться на сайт</a>
+    </div>
+
+    <!-- Upload Zone -->
+    <div class="admin-upload" id="uploadZone">
+      <p class="admin-upload__text">Перетащите фото сюда или нажмите кнопку</p>
+      <button type="button" class="admin-upload__btn" id="uploadBtn">Загрузить фото</button>
+      <input type="file" id="uploadInput" accept="image/*" multiple hidden>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="admin-gallery" id="adminGallery">
+      <!-- Rendered by admin.js -->
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

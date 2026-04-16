@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ЛЕЗВИЕ — барбершоп в Ижевске. Точность. Стиль. Характер. Запишись онлайн.">
+  <title>ЛЕЗВИЕ — Барбершоп в Ижевске</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====== STICKY NAV ====== -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo">ЛЕЗВИЕ</a>
+      <nav class="nav__links" id="navLinks">
+        <a href="#services" class="nav__link">Услуги</a>
+        <a href="#gallery" class="nav__link">Галерея</a>
+        <a href="#locations" class="nav__link">Локации</a>
+        <a href="#contacts" class="nav__link">Контакты</a>
+        <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="btn btn--red nav__cta">Записаться</a>
+      </nav>
+      <button class="nav__burger" id="navBurger" aria-label="Открыть меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero" id="hero">
+    <!-- PLACEHOLDER: Replace with real Lezvie photo -->
+    <img src="../shared/img/hero-1.jpg" alt="ЛЕЗВИЕ барбершоп" class="hero__img" loading="eager">
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <h1 class="hero__title">
+        Точность. Стиль. Характер. Уверенность.<br>
+        <span class="hero__subtitle">Всё, что нужно мужчине — в&nbsp;одном кресле.</span>
+      </h1>
+      <p class="hero__tagline">ЛЕЗВИЕ — твой новый стандарт.</p>
+    </div>
+    <div class="hero__scroll-indicator" aria-hidden="true">
+      <span class="hero__scroll-line"></span>
+    </div>
+  </section>
+
+  <!-- ====== SERVICES ====== -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section-title">УСЛУГИ</h2>
+      <ul class="services__list">
+        <li class="services__item">
+          <div class="services__name">
+            Первая стрижка
+            <span class="services__tag">ПЕРВЫЙ ВИЗИТ</span>
+          </div>
+          <div class="services__price">1000₽</div>
+        </li>
+        <li class="services__item">
+          <div class="services__name">Стрижка + борода</div>
+          <div class="services__price">1800₽</div>
+        </li>
+        <li class="services__item">
+          <div class="services__name">Отец + сын</div>
+          <div class="services__price">1800₽</div>
+        </li>
+      </ul>
+      <div class="services__promo">
+        <p>День рождения? Лови <strong>-30%</strong> на все услуги</p>
+      </div>
+      <div class="services__footer">
+        <p class="services__quote">Стиль — не разговор, стиль — действие.</p>
+        <p class="services__cta-text">Запишись и приходи. ЛЕЗВИЕ ждёт.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== GALLERY ====== -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <h2 class="section-title">ГАЛЕРЕЯ</h2>
+      <div class="gallery__grid" id="galleryGrid">
+        <!-- Rendered by gallery.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== LIGHTBOX ====== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фото" hidden>
+    <button class="lightbox__close" aria-label="Закрыть">&times;</button>
+    <button class="lightbox__prev" aria-label="Предыдущее фото">&#8249;</button>
+    <img class="lightbox__img" id="lightboxImg" src="" alt="Фото галереи">
+    <button class="lightbox__next" aria-label="Следующее фото">&#8250;</button>
+  </div>
+
+  <!-- ====== LOCATIONS ====== -->
+  <section class="locations" id="locations">
+    <div class="container">
+      <h2 class="section-title">ЛОКАЦИИ</h2>
+      <div class="locations__grid">
+        <div class="locations__card">
+          <div class="locations__map" id="map1"></div>
+          <div class="locations__info">
+            <address class="locations__address">ул. Барышникова, 27</address>
+            <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+          </div>
+        </div>
+        <div class="locations__card">
+          <div class="locations__map" id="map2"></div>
+          <div class="locations__info">
+            <address class="locations__address">ул. Пушкинская, 270</address>
+            <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+          </div>
+        </div>
+        <div class="locations__card">
+          <div class="locations__map" id="map3"></div>
+          <div class="locations__info">
+            <address class="locations__address">ул. Красноармейская, 164</address>
+            <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CTA / BOOKING ====== -->
+  <section class="booking" id="contacts">
+    <div class="container">
+      <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="btn btn--red btn--large">ЗАПИСАТЬСЯ</a>
+      <p class="booking__text">Выбери удобный способ связи</p>
+      <div class="booking__socials">
+        <a href="https://vk.com/lezvie_barbershop" target="_blank" rel="noopener" aria-label="ВКонтакте" class="booking__social">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.547 7h-3.29a.743.743 0 0 0-.655.392s-1.312 2.416-1.734 3.23C14.734 12.813 14 12.126 14 11.11V7.603A1.104 1.104 0 0 0 12.896 6.5h-2.474a1.982 1.982 0 0 0-1.75.813s1.255-.204 1.255 1.49c0 .42.022 1.626.04 2.64a.73.73 0 0 1-1.272.503 21.54 21.54 0 0 1-2.498-4.543.693.693 0 0 0-.63-.403H2.453a.5.5 0 0 0-.472.667C3.736 13.697 7.3 17.5 12.09 17.5h1.2a.5.5 0 0 0 .5-.5v-1.62c0-.328.3-.554.604-.467a8.762 8.762 0 0 1 2.86 1.903.743.743 0 0 0 .525.217h2.96a.5.5 0 0 0 .39-.812C19.84 14.673 18.497 13.553 18.09 13.2c-.408-.354-.3-.484 0-.938.012-.016 2.031-2.88 2.248-3.862a.5.5 0 0 0-.49-.6z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/lezvie_barbershop.izhevsk/" target="_blank" rel="noopener" aria-label="Instagram" class="booking__social">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </a>
+        <a href="#" aria-label="Telegram" class="booking__social">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </a>
+        <a href="#" aria-label="WhatsApp" class="booking__social">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <span class="footer__logo">ЛЕЗВИЕ</span>
+        <a href="tel:+79127574848" class="footer__link">+7-912-757-48-48</a>
+        <a href="mailto:lezviebarbershop.izhevsk@yandex.ru" class="footer__link">lezviebarbershop.izhevsk@yandex.ru</a>
+        <div class="footer__socials">
+          <a href="https://vk.com/lezvie_barbershop" target="_blank" rel="noopener" aria-label="ВКонтакте">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.547 7h-3.29a.743.743 0 0 0-.655.392s-1.312 2.416-1.734 3.23C14.734 12.813 14 12.126 14 11.11V7.603A1.104 1.104 0 0 0 12.896 6.5h-2.474a1.982 1.982 0 0 0-1.75.813s1.255-.204 1.255 1.49c0 .42.022 1.626.04 2.64a.73.73 0 0 1-1.272.503 21.54 21.54 0 0 1-2.498-4.543.693.693 0 0 0-.63-.403H2.453a.5.5 0 0 0-.472.667C3.736 13.697 7.3 17.5 12.09 17.5h1.2a.5.5 0 0 0 .5-.5v-1.62c0-.328.3-.554.604-.467a8.762 8.762 0 0 1 2.86 1.903.743.743 0 0 0 .525.217h2.96a.5.5 0 0 0 .39-.812C19.84 14.673 18.497 13.553 18.09 13.2c-.408-.354-.3-.484 0-.938.012-.016 2.031-2.88 2.248-3.862a.5.5 0 0 0-.49-.6z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/lezvie_barbershop.izhevsk/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          </a>
+        </div>
+        <span class="footer__copy">&copy; 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/gallery.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
