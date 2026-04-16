@@ -46,9 +46,7 @@
     <div class="hero__overlay"></div>
     <div class="hero__content">
       <h1 class="hero__tagline" id="heroTagline">
-        Точность. Стиль. Характер. Уверенность.
-        Всё, что нужно мужчине — в одном кресле.
-        ЛЕЗВИЕ — твой новый стандарт.
+        Точность в каждом движении. ЛЕЗВИЕ.
       </h1>
     </div>
     <div class="hero__scroll-indicator" data-animate="fade-in" data-delay="1.5">
@@ -62,39 +60,38 @@
   <!-- ====== SERVICES ====== -->
   <section class="services" id="services">
     <div class="container">
-      <h2 class="section-title" data-animate="fade-up">УСЛУГИ</h2>
+      <span class="services__label" data-animate="fade-up">УСЛУГИ</span>
+      <h2 class="services__headline" data-animate="fade-up" data-delay="0.1">Стиль — не разговор, стиль — действие.</h2>
+      <p class="services__subtext" data-animate="fade-up" data-delay="0.15">Только по записи. Без очередей, без ожидания.</p>
 
       <div class="services__grid">
-        <div class="services__card services__card--promo" data-animate="fade-up" data-delay="0.1">
-          <span class="services__number">01</span>
+        <div class="services__card" data-animate="fade-up" data-delay="0.2">
+          <span class="services__number">#1</span>
           <h3 class="services__name">Первая стрижка</h3>
           <span class="services__price">1000₽</span>
-          <span class="services__badge">ПРОМО</span>
-        </div>
-
-        <div class="services__card" data-animate="fade-up" data-delay="0.2">
-          <span class="services__number">02</span>
-          <h3 class="services__name">Стрижка + борода</h3>
-          <span class="services__price">1800₽</span>
+          <p class="services__desc">Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита.</p>
         </div>
 
         <div class="services__card" data-animate="fade-up" data-delay="0.3">
-          <span class="services__number">03</span>
+          <span class="services__number">#2</span>
+          <h3 class="services__name">Стрижка + борода</h3>
+          <span class="services__price">1800₽</span>
+          <p class="services__desc">Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок.</p>
+        </div>
+
+        <div class="services__card" data-animate="fade-up" data-delay="0.4">
+          <span class="services__number">#3</span>
           <h3 class="services__name">Отец + сын</h3>
           <span class="services__price">1800₽</span>
+          <p class="services__desc">Две стрижки по цене комплекса. Приходи с сыном — уходите оба с новым стилем. Семейная традиция.</p>
         </div>
 
-        <div class="services__card services__card--birthday" data-animate="fade-up" data-delay="0.4">
-          <span class="services__number">🎂</span>
-          <h3 class="services__name">День рождения?</h3>
+        <div class="services__card services__card--birthday" data-animate="fade-up" data-delay="0.5">
+          <span class="services__number">#4</span>
+          <h3 class="services__name">День рождения</h3>
           <span class="services__price">-30%</span>
-          <span class="services__badge">НА ВСЕ УСЛУГИ</span>
+          <p class="services__desc">Скидка на все услуги в день рождения. Просто покажи паспорт — и праздник начнётся с нового образа.</p>
         </div>
-      </div>
-
-      <div class="services__footer" data-animate="fade-up" data-delay="0.5">
-        <p class="services__motto">Стиль — не разговор, стиль — действие.</p>
-        <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="services__cta-link">Записаться →</a>
       </div>
     </div>
   </section>
@@ -102,30 +99,45 @@
   <!-- ====== BARBERS ====== -->
   <section class="barbers" id="barbers">
     <div class="container">
+      <span class="barbers__label" data-animate="fade-up">КОМАНДА</span>
+      <h2 class="barbers__headline" data-animate="fade-up" data-delay="0.1">Наши мастера.</h2>
+
       <div class="barbers__grid">
         <!-- PLACEHOLDER: Replace with real Lezvie barber photos -->
-        <div class="barbers__portrait" data-animate="fade-up" data-delay="0.1">
-          <div class="barbers__img-wrap">
-            <img src="../shared/img/barber-1.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
-          </div>
-        </div>
         <div class="barbers__portrait" data-animate="fade-up" data-delay="0.2">
-          <div class="barbers__img-wrap">
-            <img src="../shared/img/barber-2.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+          <div class="barbers__frame">
+            <div class="barbers__img-wrap">
+              <img src="../shared/img/barber-1.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+            </div>
           </div>
+          <span class="barbers__name">Имя</span>
         </div>
         <div class="barbers__portrait" data-animate="fade-up" data-delay="0.3">
-          <div class="barbers__img-wrap">
-            <img src="../shared/img/barber-3.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+          <div class="barbers__frame">
+            <div class="barbers__img-wrap">
+              <img src="../shared/img/barber-2.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+            </div>
           </div>
+          <span class="barbers__name">Имя</span>
         </div>
         <div class="barbers__portrait" data-animate="fade-up" data-delay="0.4">
-          <div class="barbers__img-wrap">
-            <img src="../shared/img/barber-4.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+          <div class="barbers__frame">
+            <div class="barbers__img-wrap">
+              <img src="../shared/img/barber-3.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+            </div>
           </div>
+          <span class="barbers__name">Имя</span>
+        </div>
+        <div class="barbers__portrait" data-animate="fade-up" data-delay="0.5">
+          <div class="barbers__frame">
+            <div class="barbers__img-wrap">
+              <img src="../shared/img/barber-4.jpg" alt="Барбер ЛЕЗВИЕ" loading="lazy">
+            </div>
+          </div>
+          <span class="barbers__name">Имя</span>
         </div>
       </div>
-      <p class="barbers__caption" data-animate="fade-up" data-delay="0.6">Не «салон». Не «мастерская». Барбершоп, как он должен быть.</p>
+      <p class="barbers__caption" data-animate="fade-up" data-delay="0.7">Не «салон». Не «мастерская». Барбершоп, как он должен быть.</p>
     </div>
   </section>
 
@@ -212,7 +224,7 @@
   <footer class="footer">
     <div class="footer__rule"></div>
     <div class="container footer__inner">
-      <span class="footer__logo">ЛЕЗВИЕ</span>
+      <p class="footer__tagline">Не просто стрижка. Стандарт.</p>
       <div class="footer__contacts">
         <a href="tel:+79127574848" class="footer__phone">+7-912-757-48-48</a>
         <a href="tel:+79120261010" class="footer__phone">+7-912-026-10-10</a>
