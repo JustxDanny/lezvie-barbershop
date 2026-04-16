@@ -28,4 +28,6 @@ Password: `lezvie2026`
 
 ## Live URLs
 
-<!-- TODO: Add Netlify URLs after deployment -->
+- **Design A "Классика":** https://lezvie-klassika.netlify.app
+- **Design B "Минимал":** https://lezvie-minimal.netlify.app
+- **Design C "Движение":** https://lezvie-dvizhenie.netlify.app
