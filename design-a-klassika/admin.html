@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ЛЕЗВИЕ — Админ-панель галереи</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-brown: #2C1810;
+      --color-gold: #C9A96E;
+      --color-gold-dark: #b8944f;
+      --color-cream: #F5F0E8;
+      --color-charcoal: #1A1A1A;
+      --color-white: #ffffff;
+      --color-red: #c0392b;
+      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-body: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.6;
+      background-color: var(--color-cream);
+      color: var(--color-charcoal);
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background-color: var(--color-brown);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header__logo {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+
+    .admin-header__back {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .admin-header__back:hover {
+      color: var(--color-gold);
+    }
+
+    .admin-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* --- Login --- */
+    .login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+    }
+
+    .login__title {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-brown);
+      margin-bottom: 1.5rem;
+    }
+
+    .login__form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login__input {
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      border: 2px solid #d5cfc5;
+      border-radius: 6px;
+      background: var(--color-white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login__input:focus {
+      border-color: var(--color-gold);
+    }
+
+    .login__btn {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 0.85rem;
+      background: var(--color-gold);
+      color: var(--color-white);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 48px;
+    }
+
+    .login__btn:hover {
+      background: var(--color-gold-dark);
+    }
+
+    .login__error {
+      display: none;
+      color: var(--color-red);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    /* --- Admin Panel --- */
+    .admin-panel {
+      display: none;
+    }
+
+    .admin__section-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-brown);
+      margin-bottom: 1rem;
+    }
+
+    .admin__meta {
+      font-size: 1rem;
+      color: #6b6b6b;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Thumbnail grid */
+    .admin__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .admin__thumb {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: #e8e2d8;
+    }
+
+    .admin__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .admin__delete {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 32px;
+      height: 32px;
+      background: rgba(192, 57, 43, 0.9);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      line-height: 1;
+    }
+
+    .admin__thumb:hover .admin__delete {
+      opacity: 1;
+    }
+
+    .admin__empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 2rem;
+    }
+
+    /* Drop zone */
+    .admin__drop {
+      border: 3px dashed #c5bfb3;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 2rem;
+    }
+
+    .admin__drop:hover,
+    .admin__drop--active {
+      border-color: var(--color-gold);
+      background: rgba(201, 169, 110, 0.06);
+    }
+
+    .admin__drop-text {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      color: var(--color-brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .admin__drop-hint {
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .admin__drop input[type="file"] {
+      display: none;
+    }
+
+    /* Actions */
+    .admin__actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .admin__btn {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.7rem 1.5rem;
+      border: 2px solid;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+
+    .admin__btn--reset {
+      border-color: var(--color-red);
+      color: var(--color-red);
+      background: transparent;
+    }
+
+    .admin__btn--reset:hover {
+      background: var(--color-red);
+      color: var(--color-white);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <a href="index.html" class="admin-header__logo">ЛЕЗВИЕ</a>
+    <a href="index.html" class="admin-header__back">&larr; На сайт</a>
+  </header>
+
+  <div class="admin-container">
+
+    <!-- Login Gate -->
+    <div id="loginSection" class="login">
+      <h1 class="login__title">Админ-панель галереи</h1>
+      <form id="loginForm" class="login__form">
+        <input
+          type="password"
+          id="passwordInput"
+          class="login__input"
+          placeholder="Введите пароль"
+          autocomplete="current-password"
+          required
+        >
+        <p id="loginError" class="login__error">Неверный пароль</p>
+        <button type="submit" class="login__btn">Войти</button>
+      </form>
+    </div>
+
+    <!-- Admin UI -->
+    <div id="adminSection" class="admin-panel">
+
+      <h2 class="admin__section-title">Текущие фото галереи</h2>
+      <p class="admin__meta">Всего изображений: <strong id="imageCount">0</strong></p>
+
+      <div id="thumbnailGrid" class="admin__grid">
+        <!-- Thumbnails rendered by admin.js -->
+      </div>
+
+      <h2 class="admin__section-title">Загрузить новые</h2>
+
+      <div id="dropZone" class="admin__drop">
+        <p class="admin__drop-text">Перетащите изображения сюда</p>
+        <p class="admin__drop-hint">или нажмите для выбора файлов</p>
+        <input type="file" id="fileInput" accept="image/*" multiple>
+      </div>
+
+      <div class="admin__actions">
+        <button id="resetBtn" class="admin__btn admin__btn--reset">Сбросить к стандартным</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
