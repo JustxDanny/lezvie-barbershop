@@ -30,6 +30,24 @@
   var gridEl, lightboxEl, lightboxImg;
   var currentImages = [];
   var currentIndex = 0;
+  var lastFocus = null;
+
+  function preload(src) {
+    if (!src) return;
+    var img = new Image();
+    img.src = src;
+  }
+
+  function swapImg(src, alt) {
+    if (!lightboxImg) return;
+    // Fade via opacity for smoother transition
+    lightboxImg.style.opacity = '0';
+    setTimeout(function () {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt || '';
+      lightboxImg.style.opacity = '';
+    }, 140);
+  }
 
   /* ---------- Load images from localStorage or default ---------- */
   function getImages() {
@@ -70,7 +88,10 @@
       imgEl.src = img.src;
       imgEl.alt = img.alt || 'Фото ' + (i + 1);
       imgEl.loading = 'lazy';
+      imgEl.decoding = 'async';
       imgEl.draggable = false;
+      imgEl.width  = 800;
+      imgEl.height = 600;
 
       item.appendChild(imgEl);
       item.addEventListener('click', function () {
@@ -84,67 +105,71 @@
     initGalleryObserver();
   }
 
-  /* ---------- Scroll observer for gallery items ---------- */
+  /* ---------- Scroll observer via shared helper from main.js ---------- */
   function initGalleryObserver() {
     var items = gridEl.querySelectorAll('[data-animate]');
     if (!items.length) return;
 
-    items.forEach(function (el) {
-      var delay = el.getAttribute('data-delay');
-      if (delay) {
-        el.style.transitionDelay = delay + 's';
-      }
-    });
+    if (typeof window.__lezvieReveal === 'function') {
+      window.__lezvieReveal(items);
+      return;
+    }
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+    // Fallback if main.js failed to load
+    items.forEach(function (el) {
+      var d = el.getAttribute('data-delay');
+      if (d) el.style.transitionDelay = d + 's';
+    });
+    var obs = new IntersectionObserver(function (entries, o) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          o.unobserve(e.target);
         }
       });
-    }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
-    });
-
-    items.forEach(function (el) {
-      observer.observe(el);
-    });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    items.forEach(function (el) { obs.observe(el); });
   }
 
   /* ---------- Lightbox ---------- */
   function openLightbox(index) {
-    lightboxEl = document.getElementById('lightbox');
+    lightboxEl  = document.getElementById('lightbox');
     lightboxImg = document.getElementById('lightboxImg');
     if (!lightboxEl || !lightboxImg) return;
 
+    lastFocus = document.activeElement;
     currentIndex = index;
     lightboxImg.src = currentImages[currentIndex].src;
     lightboxImg.alt = currentImages[currentIndex].alt || '';
     lightboxEl.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Preload neighbors
+    var n = currentImages.length;
+    preload(currentImages[(currentIndex + 1) % n].src);
+    preload(currentImages[(currentIndex - 1 + n) % n].src);
+
+    var closeBtn = lightboxEl.querySelector('.lightbox__close');
+    if (closeBtn) closeBtn.focus();
   }
 
   function closeLightbox() {
     if (!lightboxEl) return;
     lightboxEl.classList.remove('active');
     document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  function prevImage() {
+  function step(dir) {
     if (!currentImages.length) return;
-    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-    lightboxImg.src = currentImages[currentIndex].src;
-    lightboxImg.alt = currentImages[currentIndex].alt || '';
+    var n = currentImages.length;
+    currentIndex = (currentIndex + dir + n) % n;
+    swapImg(currentImages[currentIndex].src, currentImages[currentIndex].alt);
+    preload(currentImages[(currentIndex + dir + n) % n].src);
   }
 
-  function nextImage() {
-    if (!currentImages.length) return;
-    currentIndex = (currentIndex + 1) % currentImages.length;
-    lightboxImg.src = currentImages[currentIndex].src;
-    lightboxImg.alt = currentImages[currentIndex].alt || '';
-  }
+  function prevImage() { step(-1); }
+  function nextImage() { step(1);  }
 
   function initLightbox() {
     lightboxEl = document.getElementById('lightbox');
