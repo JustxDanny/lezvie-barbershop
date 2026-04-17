@@ -520,7 +520,20 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   contain-intrinsic-size: 800px;
 }
 
-/* Seamless top — hero already bleeds to identical dark-warm */
+.services::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184, 101, 60, 0.05), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(21, 17, 14, 0.8), transparent 70%);
+  pointer-events: none;
+}
+
+.services > .container {
+  position: relative;
+  z-index: 1;
+}
 
 .services__label {
   display: block;
@@ -650,8 +663,24 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   padding: 5rem 0;
   background-color: var(--color-dark-warm);
   color: #E8E4DE;
+  position: relative;
   content-visibility: auto;
   contain-intrinsic-size: 700px;
+}
+
+.barbers::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184, 101, 60, 0.05), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(21, 17, 14, 0.8), transparent 70%);
+  pointer-events: none;
+}
+
+.barbers > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .barbers__label {
@@ -902,9 +931,9 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   background-color: rgba(15, 13, 11, 0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  padding: 5rem 5rem;
   opacity: 0;
   visibility: hidden;
   transition:
@@ -918,13 +947,17 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .lightbox__img {
-  max-width: 90vw;
-  max-height: 85vh;
+  display: block;
+  max-width:  100%;
+  max-height: 100%;
+  width:      auto;
+  height:     auto;
   object-fit: contain;
-  transform: scale(0.96);
-  opacity: 0.95;
+  margin:     0 auto;
+  transform:  scale(0.96);
+  opacity:    0.95;
   transition:
-    transform 0.5s var(--ease-out-expo),
+    transform 0.5s  var(--ease-out-expo),
     opacity   0.25s var(--ease-out-expo);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
   cursor: default;
@@ -1376,6 +1409,17 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
   .cta__title {
     font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .lightbox {
+    padding: 4.5rem 1rem;
+  }
+
+  .lightbox__prev,
+  .lightbox__next {
+    font-size: 2.2rem;
+    min-width: 40px;
+    min-height: 40px;
   }
 }
 
