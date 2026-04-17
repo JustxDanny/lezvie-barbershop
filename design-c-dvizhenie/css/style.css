@@ -72,7 +72,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-text);
-  background-color: var(--color-bg);
+  background-color: var(--color-dark-warm);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -122,14 +122,14 @@ ul, ol {
 
 /* ---------- Custom scrollbar ---------- */
 html {
-  scrollbar-color: var(--color-accent) var(--color-bg);
+  scrollbar-color: var(--color-accent) var(--color-dark-warm);
   scrollbar-width: thin;
 }
 html::-webkit-scrollbar       { width: 10px; }
-html::-webkit-scrollbar-track { background: var(--color-bg); }
+html::-webkit-scrollbar-track { background: var(--color-dark-warm); }
 html::-webkit-scrollbar-thumb {
   background: var(--color-accent);
-  border: 2px solid var(--color-bg);
+  border: 2px solid var(--color-dark-warm);
   border-radius: 10px;
 }
 html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
@@ -422,7 +422,27 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   inset: 0;
   background:
     radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%),
-    linear-gradient(to bottom, rgba(21,17,14,0.45) 0%, rgba(21,17,14,0.2) 50%, rgba(21,17,14,0.65) 100%);
+    linear-gradient(
+      to bottom,
+      rgba(21,17,14,0.45) 0%,
+      rgba(21,17,14,0.22) 40%,
+      rgba(21,17,14,0.70) 78%,
+      rgba(21,17,14,0.95) 94%,
+      rgba(21,17,14,1.00) 100%
+    );
+}
+
+/* Bleed band — photo dissolves into services color over ~14vh */
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14vh;
+  background: linear-gradient(to bottom, rgba(21,17,14,0) 0%, var(--color-dark-warm) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hero__content {
@@ -500,14 +520,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   contain-intrinsic-size: 800px;
 }
 
-.services::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 120px;
-  background: linear-gradient(to bottom, rgba(31, 28, 25, 0.6), transparent);
-  pointer-events: none;
-}
+/* Seamless top — hero already bleeds to identical dark-warm */
 
 .services__label {
   display: block;
@@ -967,17 +980,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 .lightbox__next:hover { transform: translateY(-50%) translateX(3px); }
 
 /* ============================================================
-   LOCATIONS
+   LOCATIONS — Dark section
    ============================================================ */
 .locations {
   padding: 6rem 0;
-  background-color: var(--color-bg-light);
+  background-color: var(--color-dark-warm);
+  color: #E8E4DE;
   content-visibility: auto;
   contain-intrinsic-size: 900px;
 }
 
 .locations .section-title {
   text-align: center;
+  color: #F0ECE5;
 }
 
 .locations__list {
@@ -990,8 +1005,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  background-color: var(--color-bg);
-  border: 1px solid rgba(31, 28, 25, 0.06);
+  background-color: #1C1814;
+  border: 1px solid rgba(201, 169, 110, 0.1);
   overflow: hidden;
   border-radius: 2px;
   transition:
@@ -1001,8 +1016,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .locations__card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: rgba(184, 101, 60, 0.25);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  border-color: rgba(184, 101, 60, 0.35);
   transform: translateY(-2px);
 }
 
@@ -1019,13 +1034,13 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   font-size: 1.4rem;
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
-  color: var(--color-dark);
+  color: #F0ECE5;
 }
 
 .locations__address {
   font-family: var(--font-body);
   font-size: 1rem;
-  color: var(--color-text-muted);
+  color: rgba(232, 228, 222, 0.6);
   margin-bottom: 0.5rem;
 }
 
@@ -1038,7 +1053,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
 .locations__map {
   min-height: 250px;
-  background-color: #E6E2DB;
+  background-color: #2A2421;
 }
 
 /* ============================================================
@@ -1159,10 +1174,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 /* ============================================================
-   FOOTER
+   FOOTER — Dark
    ============================================================ */
 .footer {
-  background-color: var(--color-bg-light);
+  background-color: var(--color-dark-warm);
+  color: rgba(232, 228, 222, 0.72);
   padding-bottom: 2.5rem;
 }
 
@@ -1172,9 +1188,9 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   background: linear-gradient(
     to right,
     transparent 0%,
-    rgba(31, 28, 25, 0.12) 20%,
-    var(--color-accent)    50%,
-    rgba(31, 28, 25, 0.12) 80%,
+    rgba(201, 169, 110, 0.18) 20%,
+    var(--color-accent)       50%,
+    rgba(201, 169, 110, 0.18) 80%,
     transparent 100%
   );
 }
@@ -1193,7 +1209,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   font-style: italic;
   font-weight: 500;
   font-size: 1.1rem;
-  color: var(--color-dark);
+  color: #F0ECE5;
   letter-spacing: 0.02em;
 }
 
@@ -1207,7 +1223,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 .footer__phone {
   font-family: var(--font-body);
   font-size: 1rem;
-  color: var(--color-text-muted);
+  color: rgba(232, 228, 222, 0.72);
   transition: color 0.35s var(--ease-smooth);
   position: relative;
 }
@@ -1243,7 +1259,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: var(--color-text-muted);
+  color: rgba(232, 228, 222, 0.72);
   transition:
     color     0.35s var(--ease-smooth),
     transform 0.4s  var(--ease-out-expo);
@@ -1257,7 +1273,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 .footer__copy {
   font-family: var(--font-body);
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: rgba(232, 228, 222, 0.5);
 }
 
 /* ============================================================
