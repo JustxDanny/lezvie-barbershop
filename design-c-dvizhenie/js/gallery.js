@@ -15,17 +15,14 @@
     { src: '../shared/img/gallery-3.jpg', alt: 'Галерея 3' },
     { src: '../shared/img/gallery-4.jpg', alt: 'Галерея 4' },
     { src: '../shared/img/gallery-5.jpg', alt: 'Галерея 5' },
-    { src: '../shared/img/gallery-6.jpg', alt: 'Галерея 6' },
-    { src: '../shared/img/gallery-7.jpg', alt: 'Галерея 7' },
-    { src: '../shared/img/gallery-8.jpg', alt: 'Галерея 8' },
-    { src: '../shared/img/gallery-9.jpg', alt: 'Галерея 9' }
+    { src: '../shared/img/gallery-6.jpg', alt: 'Галерея 6' }
   ];
 
   /* Parallax speeds per item (varied for depth) */
-  var PARALLAX_SPEEDS = [0.08, -0.05, 0.1, -0.06, 0.04, -0.08, 0.07, -0.04, 0.06];
+  var PARALLAX_SPEEDS = [0.08, -0.05, 0.1, -0.06, 0.04, -0.08];
 
   /* Animation delays for stagger */
-  var ANIM_DELAYS = [0, 0.1, 0.2, 0.15, 0.25, 0.3, 0.1, 0.2, 0.35];
+  var ANIM_DELAYS = [0, 0.1, 0.2, 0.15, 0.25, 0.3];
 
   var gridEl, lightboxEl, lightboxImg;
   var currentImages = [];
