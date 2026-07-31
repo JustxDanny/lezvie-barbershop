@@ -45,11 +45,21 @@
   --ease-soft:      cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth:    cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Timings */
-  --t-fast:   0.25s;
-  --t-base:   0.4s;
-  --t-slow:   0.7s;
-  --t-reveal: 1.1s;
+  /* Contract aliases — ALL NEW code uses these; existing code keeps --ease-out-expo */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);    /* = --ease-soft, promoted to contract default */
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);    /* exits only: lightbox close, drawer close, img swap-out */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);/* HARD CAP 3 uses: burger X, magnetic release, lightbox arrows */
+
+  /* Timings — duration scale (contract) */
+  --t-press:  0.1s;   /* :active compress */
+  --t-fast:   0.15s;  /* hover color/opacity flips */
+  --t-base:   0.2s;   /* default small UI */
+  --t-modal:  0.3s;   /* overlay open/close */
+  --t-slow:   0.7s;   /* word/char reveals */
+  --t-reveal: 1.1s;   /* scroll reveals */
+
+  /* Glow (lamp + spotlight share it) */
+  --glow-gold: rgba(201, 169, 110, 0.09);
 }
 
 /* ---------- Reset ---------- */
@@ -76,11 +86,15 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  opacity: 0;
   transition: opacity 0.6s var(--ease-out-expo);
 }
 
-body.is-ready {
+/* Hidden state scoped under html.js — no-JS never hides content */
+html.js body {
+  opacity: 0;
+}
+
+html.js body.is-ready {
   opacity: 1;
 }
 
@@ -113,9 +127,9 @@ ul, ol {
   color: var(--color-bg-light);
 }
 
-/* ---------- Focus ring ---------- */
+/* ---------- Focus ring — no animation, instant ---------- */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-gold);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -160,7 +174,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   will-change: opacity, transform, filter;
 }
 
-[data-animate="fade-up"] {
+html.js [data-animate="fade-up"] {
   opacity: 0;
   transform: translate3d(0, 36px, 0) scale(0.985);
   filter: blur(6px);
@@ -169,25 +183,25 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     transform  var(--t-reveal) var(--ease-out-expo),
     filter     0.85s           var(--ease-out-expo);
 }
-[data-animate="fade-up"].visible {
+html.js [data-animate="fade-up"].visible {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
 
-[data-animate="fade-in"] {
+html.js [data-animate="fade-in"] {
   opacity: 0;
   filter: blur(4px);
   transition:
     opacity var(--t-reveal) var(--ease-out-expo),
     filter  0.75s           var(--ease-out-expo);
 }
-[data-animate="fade-in"].visible {
+html.js [data-animate="fade-in"].visible {
   opacity: 1;
   filter: blur(0);
 }
 
-[data-animate="slide-left"] {
+html.js [data-animate="slide-left"] {
   opacity: 0;
   transform: translate3d(-56px, 0, 0);
   filter: blur(5px);
@@ -196,13 +210,13 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     transform var(--t-reveal) var(--ease-out-expo),
     filter    0.8s            var(--ease-out-expo);
 }
-[data-animate="slide-left"].visible {
+html.js [data-animate="slide-left"].visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);
 }
 
-[data-animate="slide-right"] {
+html.js [data-animate="slide-right"] {
   opacity: 0;
   transform: translate3d(56px, 0, 0);
   filter: blur(5px);
@@ -211,7 +225,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     transform var(--t-reveal) var(--ease-out-expo),
     filter    0.8s            var(--ease-out-expo);
 }
-[data-animate="slide-right"].visible {
+html.js [data-animate="slide-right"].visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);
@@ -220,6 +234,89 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 /* After reveal, release will-change to save memory */
 [data-animate].visible {
   will-change: auto;
+}
+
+/* ---------- New reveal variants ---------- */
+
+/* words / chars — parent hides until split to avoid FOUC; RM kill-switch rescues it */
+html.js [data-animate="words"]:not(.split),
+html.js [data-animate="chars"]:not(.split) { opacity: 0; }
+html.js [data-animate="words"] .word,
+html.js [data-animate="chars"] .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.35em, 0);
+  filter: blur(8px);
+  transition:
+    opacity   var(--t-slow) var(--ease-out-expo),
+    transform var(--t-slow) var(--ease-out-expo),
+    filter    0.5s          var(--ease-out-expo);
+}
+html.js [data-animate="words"].visible .word { transition-delay: calc(var(--i) * 60ms); }
+html.js [data-animate="chars"].visible .char { transition-delay: calc(var(--i) * 70ms); }
+html.js [data-animate].visible .word,
+html.js [data-animate].visible .char {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* card-rise (services) */
+html.js [data-animate="card-rise"] {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0) scale(0.96);
+  filter: blur(4px);
+  transition:
+    opacity   0.9s  var(--ease-out-expo),
+    transform 0.9s  var(--ease-out-expo),
+    filter    0.65s var(--ease-out-expo);
+}
+
+/* zoom-in (gallery inner) — --edit-offset carries the editorial nth-child offsets */
+html.js [data-animate="zoom-in"] {
+  opacity: 0;
+  transform: translate3d(0, calc(var(--edit-offset, 0px) + 24px), 0) scale(0.94);
+  filter: blur(6px);
+  transition:
+    opacity   1s   var(--ease-out-expo),
+    transform 1s   var(--ease-out-expo),
+    filter    0.7s var(--ease-out-expo);
+}
+html.js [data-animate="zoom-in"].visible {
+  transform: translate3d(0, var(--edit-offset, 0px), 0) scale(1);
+}
+
+/* line (footer rule, hairlines) */
+html.js [data-animate="line"] {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 1s var(--ease-out-expo);
+}
+
+/* shared resolve for new variants */
+html.js [data-animate].visible {
+  opacity: 1;
+  filter: blur(0);
+}
+html.js [data-animate="card-rise"].visible { transform: none; }
+html.js [data-animate="line"].visible { transform: scaleX(1); }
+
+/* rise — animation-driven fade-up twin for elements with their own hover/press
+   transforms (CTA button, socials). The from-only keyframe self-expires, so the
+   magnetic/hover engine keeps full ownership of transform afterwards. */
+html.js [data-animate="rise"]:not(.visible) {
+  opacity: 0;
+}
+html.js [data-animate="rise"].visible {
+  animation: riseIn var(--t-reveal) var(--ease-out-expo) var(--reveal-delay, 0s) backwards;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 36px, 0) scale(0.985);
+    filter: blur(6px);
+  }
 }
 
 /* ============================================================
@@ -235,10 +332,23 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     background-color 0.5s var(--ease-smooth),
     backdrop-filter  0.5s var(--ease-smooth),
     border-color     0.5s var(--ease-smooth),
-    box-shadow       0.5s var(--ease-smooth);
+    box-shadow       0.5s var(--ease-smooth),
+    opacity          0.6s var(--ease-out-expo) 0.15s,
+    transform        0.6s var(--ease-out-expo) 0.15s;
   background-color: transparent;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
+}
+
+/* Load choreography — nav drops in at ~150ms */
+html.js .nav {
+  opacity: 0;
+  transform: translateY(-16px);
+}
+
+html.js body.is-ready .nav {
+  opacity: 1;
+  transform: none;
 }
 
 .nav--solid {
@@ -266,15 +376,46 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   font-size: 1.6rem;
   letter-spacing: 0.15em;
   color: var(--color-bg-light);
-  transition: color 0.5s var(--ease-smooth), transform 0.4s var(--ease-out-expo);
+  transition:
+    color               0.5s var(--ease-smooth),
+    transform           0.4s var(--ease-out-expo),
+    background-position 0.6s var(--ease-out);
 }
 
 .nav__logo:hover {
   transform: translateY(-1px);
+  background-position: 0% 0;
+}
+
+.nav__logo:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: var(--t-press);
 }
 
 .nav--solid .nav__logo {
   color: var(--color-dark);
+}
+
+/* One-shot gold sheen on logo hover — gradient text, light band sweeps through */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .nav__logo {
+    --logo-ink: var(--color-bg-light);
+    color: transparent;
+    background-image: linear-gradient(100deg,
+      var(--logo-ink) 45%,
+      var(--color-gold-light) 50%,
+      var(--logo-ink) 55%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .nav--solid .nav__logo {
+    --logo-ink: var(--color-dark);
+    color: transparent;
+  }
 }
 
 .nav__menu {
@@ -290,9 +431,15 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-bg-light);
-  transition: color 0.4s var(--ease-smooth);
+  transition:
+    color     0.4s var(--ease-smooth),
+    transform var(--t-press) var(--ease-smooth);
   position: relative;
   padding: 4px 0;
+}
+
+.nav__link:active {
+  transform: translateY(1px);
 }
 
 .nav__link::after {
@@ -315,6 +462,20 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
 .nav--solid .nav__link {
   color: var(--color-dark);
+}
+
+/* Scroll-spy — the hover underline doubles as wayfinding */
+.nav__link--active {
+  color: var(--color-gold-light);
+}
+
+.nav--solid .nav__link--active {
+  color: var(--color-gold-deep);
+}
+
+.nav__link--active::after {
+  transform: translateX(-50%) scaleX(1);
+  background-color: var(--color-gold);
 }
 
 .nav__cta {
@@ -357,6 +518,22 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   transform: translateX(100%);
 }
 
+.nav__cta:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: var(--t-press);
+  transition-timing-function: var(--ease-smooth);
+}
+
+/* Touch tap fires the same shine sweep hover produces */
+.nav__cta.is-pressed::before {
+  animation: navCtaShine 0.8s var(--ease-out-expo);
+}
+
+@keyframes navCtaShine {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
 /* Burger */
 .nav__burger {
   display: none;
@@ -374,7 +551,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   height: 2px;
   background-color: var(--color-bg-light);
   transition:
-    transform        0.4s var(--ease-out-expo),
+    transform        0.4s var(--ease-spring), /* spring use 1 of 3 — the X snaps shut */
     opacity          0.25s,
     background-color 0.5s var(--ease-smooth);
   margin: 0 auto;
@@ -387,6 +564,37 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 .nav__burger.active span:nth-child(1) { transform: translateY(7px)  rotate(45deg); }
 .nav__burger.active span:nth-child(2) { opacity: 0; transform: scaleX(0.4); }
 .nav__burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Scroll progress razor line — position feedback, stays under RM */
+.nav__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--color-gold-deep), var(--color-gold), var(--color-gold-light));
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-smooth);
+  pointer-events: none;
+}
+
+.nav--solid .nav__progress {
+  opacity: 1;
+}
+
+/* Engine 1: scroll-driven animation; JS rAF fallback writes scaleX when unsupported */
+@supports (animation-timeline: scroll()) {
+  .nav__progress {
+    animation: growX linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes growX {
+  to { transform: scaleX(1); }
+}
 
 /* ============================================================
    HERO
@@ -408,13 +616,21 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   inset: 0;
   background-size: cover;
   background-position: center;
-  animation: kenburns 32s ease-in-out infinite alternate;
+  animation:
+    kenburns  32s  ease-in-out infinite alternate,
+    heroFocus 1.4s var(--ease-out-expo) both;
   will-change: transform;
 }
 
 @keyframes kenburns {
   from { transform: scale(1)    translate3d(0, 0, 0); }
   to   { transform: scale(1.12) translate3d(-1%, -1%, 0); }
+}
+
+/* Focus pull — the opening shot racks into focus */
+@keyframes heroFocus {
+  from { filter: blur(var(--focus-blur, 14px)) brightness(0.72); }
+  to   { filter: blur(0) brightness(1); }
 }
 
 .hero__overlay {
@@ -453,6 +669,33 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   max-width: 820px;
 }
 
+/* Gold hairline under the tagline — draws in at ~1.15s */
+.hero__content::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1.75rem;
+  width: 180px;
+  margin-left: -90px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-gold-deep), var(--color-gold) 55%, transparent);
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+html.js .hero__content::after {
+  transform: scaleX(0);
+}
+
+html.js body.is-ready .hero__content::after {
+  animation: heroHairline 0.9s var(--ease-out-expo) 1.15s both;
+}
+
+@keyframes heroHairline {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
 .hero__tagline {
   font-family: var(--font-heading);
   font-weight: 600;
@@ -479,6 +722,31 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   }
 }
 
+/* Brand word "ЛЕЗВИЕ." — shiny gold text; first sweep at 1.6s, then every 9s */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero__tagline .word--brand {
+    background-image: linear-gradient(100deg,
+      var(--color-gold) 45%,
+      var(--color-gold-light) 50%,
+      var(--color-gold) 55%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation:
+      wordReveal 0.9s var(--ease-out-expo) forwards,
+      brandSheen 9s   linear infinite;
+  }
+}
+
+@keyframes brandSheen {
+  0%    { background-position: 100% 0; }
+  13.3% { background-position: 0% 0; }
+  100%  { background-position: 0% 0; }
+}
+
 /* Scroll indicator */
 .hero__scroll-indicator {
   position: absolute;
@@ -486,16 +754,27 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
   color: var(--color-bg-light);
   font-family: var(--font-heading);
   font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+
+.hero__scroll-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
   opacity: 0.85;
+  transition:
+    opacity   var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out);
+}
+
+.hero__scroll-link:hover {
+  opacity: 1;
+  transform: translateY(3px);
 }
 
 .hero__scroll-indicator svg {
@@ -556,6 +835,27 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   color: #F0ECE5;
   margin-bottom: 0.5rem;
   letter-spacing: 0.005em;
+  position: relative;
+}
+
+/* Lamp Glow — single overhead barbershop lamp pools onto the headline */
+.services__headline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -150px;
+  width: 480px;
+  height: 220px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, var(--glow-gold), transparent);
+  filter: blur(60px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.4s var(--ease-out-expo) 0.2s;
+}
+
+.services__headline.visible::before {
+  opacity: 0.85;
 }
 
 .services__subtext {
@@ -588,16 +888,44 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     transform        0.6s var(--ease-out-expo);
 }
 
+/* card-rise owns the reveal transition; background-color keeps its hover fade */
+html.js .services__card[data-animate="card-rise"] {
+  transition:
+    opacity          0.9s  var(--ease-out-expo),
+    transform        0.9s  var(--ease-out-expo),
+    filter           0.65s var(--ease-out-expo),
+    background-color 0.6s  var(--ease-out-expo);
+}
+
+/* Spotlight — the lamp follows your hand (JS writes --mx/--my, FINE pointers only) */
+.services__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%),
+              var(--glow-gold), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-smooth);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .services__card:hover::before {
+    opacity: 1;
+  }
+}
+
 .services__card::after {
   content: '';
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translateX(-50%);
-  width: 0;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 60%;
   height: 2px;
   background-color: var(--color-accent);
-  transition: width 0.6s var(--ease-out-expo);
+  transition: transform 0.6s var(--ease-out-expo);
 }
 
 .services__card:hover {
@@ -605,12 +933,22 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .services__card:hover::after {
-  width: 60%;
+  transform: translateX(-50%) scaleX(1);
 }
 
+/* 0.05s delay — card hover → number brighten reads cause → effect */
 .services__card:hover .services__number {
   opacity: 1;
   transform: translateY(-2px);
+  transition-delay: 0.05s;
+}
+
+/* Touch press — spotlight's stand-in */
+html.js .services__card[data-animate="card-rise"]:active,
+.services__card:active {
+  background-color: #1C1814;
+  transform: scale(0.99);
+  transition-duration: 0.12s;
 }
 
 .services__number {
@@ -654,6 +992,45 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
 .services__card--birthday .services__number {
   opacity: 0.85;
+}
+
+/* Border Beam — the page's one continuous ambient effect (birthday card only) */
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.services__card--birthday .beam {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  opacity: 0.7;
+  background: conic-gradient(from var(--beam-angle),
+              transparent 0 340deg, var(--color-gold-light) 355deg, var(--color-gold) 360deg);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: beam 7s linear infinite paused;
+}
+
+/* Runs only revealed AND on-screen (JS IO toggles .services--inview — battery) */
+.services--inview .services__card--birthday.visible .beam {
+  animation-play-state: running;
+}
+
+@keyframes beam {
+  to { --beam-angle: 360deg; }
+}
+
+/* No @property (Safari <16.4, detected in JS) — degrade to a static gold border */
+html.no-at-property .services__card--birthday .beam {
+  background: none;
+  animation: none;
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.4);
 }
 
 /* ============================================================
@@ -721,6 +1098,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   transform: translateY(-6px);
 }
 
+/* Touch press — the img zoom does NOT fire on touch, the lift does */
+.barbers__portrait:active {
+  transform: translateY(-2px) scale(0.995);
+  transition-duration: 0.15s;
+}
+
 .barbers__frame {
   position: relative;
   padding: 6px;
@@ -777,7 +1160,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     rgba(21, 17, 14, 0.55) 100%
   );
   pointer-events: none;
-  transition: opacity 0.6s var(--ease-out-expo);
+  /* 0.9s — vignette resolves after the zoom starts, same focus-pull signature */
+  transition: opacity 0.9s var(--ease-out-expo);
 }
 
 .barbers__portrait:hover .barbers__img-wrap::after {
@@ -792,9 +1176,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   filter: saturate(0.92);
 }
 
-.barbers__portrait:hover .barbers__img-wrap img {
-  transform: scale(1.06);
-  filter: saturate(1);
+/* Img zoom is hover-only — suppressed on touch (press lift covers it) */
+@media (hover: hover) {
+  .barbers__portrait:hover .barbers__img-wrap img {
+    transform: scale(1.06);
+    filter: saturate(1);
+  }
 }
 
 .barbers__name {
@@ -806,11 +1193,66 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   text-transform: uppercase;
   color: rgba(232, 228, 222, 0.75);
   margin-top: 1.1rem;
-  transition: color 0.4s var(--ease-out-expo);
+  transition:
+    color     0.4s var(--ease-out-expo),
+    transform 0.4s var(--ease-out-expo);
 }
 
+/* The name answers the frame — staggered causality (0.08s) */
 .barbers__portrait:hover .barbers__name {
   color: var(--color-gold);
+  transform: translateY(-2px);
+  transition-delay: 0.08s;
+}
+
+/* ---------- Gold Curtain Reveal — FLAGSHIP entrance ---------- */
+/* Transform-only pseudo-element sweep; --reveal-delay carries the portrait's
+   data-delay onto the descendants (80ms left→right stagger) */
+html.js .barbers__img-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -1%;
+  z-index: 2;
+  background: linear-gradient(160deg, var(--color-gold-deep), var(--color-gold) 55%, var(--color-gold-light));
+  transform: translateY(0);
+  transition: transform 0.9s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: transform;
+}
+
+html.js [data-animate="curtain"].visible .barbers__img-wrap::before {
+  transform: translateY(-102%);
+  will-change: auto;
+}
+
+/* Pre-reveal: img zoomed + desaturated behind the curtain, nameplate hidden */
+html.js [data-animate="curtain"]:not(.visible) .barbers__img-wrap img {
+  transform: scale(1.18);
+  filter: saturate(0.7) brightness(0.85);
+}
+
+html.js [data-animate="curtain"]:not(.visible) .barbers__name {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+/* Reveal beats — one-shot keyframes (from-only: they land on the natural style
+   and self-expire, so hover transforms/transitions stay untouched afterwards):
+   1. curtain lifts (0.9s)  2. img drifts into place (1.3s)  3. nameplate +0.5s */
+html.js [data-animate="curtain"].visible .barbers__img-wrap img {
+  animation: curtainImg 1.3s var(--ease-out-expo) var(--reveal-delay, 0s) backwards;
+}
+
+html.js [data-animate="curtain"].visible .barbers__name {
+  animation: curtainName 0.5s var(--ease-out) calc(var(--reveal-delay, 0s) + 0.5s) backwards;
+}
+
+@keyframes curtainImg {
+  from { transform: scale(1.18); filter: saturate(0.7) brightness(0.85); }
+}
+
+@keyframes curtainName {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
 }
 
 .barbers__caption {
@@ -858,6 +1300,37 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   color: #F0ECE5;
 }
 
+/* Gold hairline under the gallery/locations titles — echoes the hero hairline */
+.gallery .section-title,
+.locations .section-title {
+  position: relative;
+}
+
+.gallery .section-title::after,
+.locations .section-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1.25rem;
+  width: 180px;
+  margin-left: -90px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold) 35%, var(--color-gold) 65%, transparent);
+  transform: scaleX(1);
+  transform-origin: center;
+}
+
+html.js .gallery .section-title::after,
+html.js .locations .section-title::after {
+  transform: scaleX(0);
+  transition: transform 0.7s var(--ease-out-expo) 0.3s;
+}
+
+html.js .gallery .section-title.visible::after,
+html.js .locations .section-title.visible::after {
+  transform: scaleX(1);
+}
+
 .gallery__grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -867,17 +1340,38 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   padding: 0 var(--container-pad);
 }
 
+/* Three-layer transform split — outer owns parallax (inline translate3d),
+   inner owns the zoom-in reveal + editorial offset, img owns hover/press.
+   LAW: hover/press transforms NEVER live on .gallery__item — inline parallax
+   would overwrite them every frame. */
 .gallery__item {
   position: relative;
-  overflow: hidden;
   cursor: zoom-in;
+}
+
+/* Inner wrapper — visual chrome lives here so the editorial offset moves the
+   clip/shadow together with the image */
+.gallery__item-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   border-radius: 2px;
   background-color: #2A2421;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   transition: box-shadow 0.6s var(--ease-out-expo);
 }
 
-.gallery__item::after {
+/* zoom-in owns the reveal transition; box-shadow keeps its hover fade */
+html.js .gallery__item-inner[data-animate="zoom-in"] {
+  transition:
+    opacity    1s   var(--ease-out-expo),
+    transform  1s   var(--ease-out-expo),
+    filter     0.7s var(--ease-out-expo),
+    box-shadow 0.6s var(--ease-out-expo);
+}
+
+.gallery__item-inner::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -887,13 +1381,13 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   pointer-events: none;
 }
 
-.gallery__item:hover {
+.gallery__item:hover .gallery__item-inner {
   box-shadow:
     0 16px 44px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(201, 169, 110, 0.22);
 }
 
-.gallery__item:hover::after {
+.gallery__item:hover .gallery__item-inner::after {
   opacity: 1;
 }
 
@@ -910,13 +1404,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   filter: saturate(1.05);
 }
 
-/* Editorial overlapping layout */
+/* Press — the photo compresses under your finger, then the lightbox blooms */
+.gallery__item:active img {
+  transform: scale(0.97);
+  transition-duration: var(--t-press);
+}
+
+/* Editorial overlapping layout — offsets ride --edit-offset (consumed by zoom-in) */
 .gallery__item:nth-child(1) { grid-column: 1 / 6;  grid-row: 1; aspect-ratio: 3/4; }
-.gallery__item:nth-child(2) { grid-column: 5 / 10; grid-row: 1; aspect-ratio: 4/3; transform: translateY(3rem); z-index: 2; }
+.gallery__item:nth-child(2) { grid-column: 5 / 10; grid-row: 1; aspect-ratio: 4/3; --edit-offset: 3rem; z-index: 2; }
 .gallery__item:nth-child(3) { grid-column: 9 / 13; grid-row: 1; aspect-ratio: 3/4; }
-.gallery__item:nth-child(4) { grid-column: 2 / 7;  grid-row: 2; aspect-ratio: 4/3; transform: translateY(-2rem); }
+.gallery__item:nth-child(4) { grid-column: 2 / 7;  grid-row: 2; aspect-ratio: 4/3; --edit-offset: -2rem; }
 .gallery__item:nth-child(5) { grid-column: 6 / 10; grid-row: 2; aspect-ratio: 1/1; z-index: 2; }
-.gallery__item:nth-child(6) { grid-column: 9 / 13; grid-row: 2; aspect-ratio: 3/4; transform: translateY(-3rem); }
+.gallery__item:nth-child(6) { grid-column: 9 / 13; grid-row: 2; aspect-ratio: 3/4; --edit-offset: -3rem; }
 
 /* ============================================================
    LIGHTBOX
@@ -931,11 +1431,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   display: grid;
   place-items: center;
   padding: 5rem 5rem;
+  cursor: zoom-out;
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity    0.5s var(--ease-out-expo),
-    visibility 0.5s var(--ease-out-expo);
+    opacity    var(--t-modal) var(--ease-out),
+    visibility var(--t-modal) var(--ease-out);
+}
+
+/* Close — exits faster on --ease-in; visibility flips after the fade */
+.lightbox:not(.active) {
+  transition:
+    opacity    0.25s var(--ease-in),
+    visibility 0s 0.25s;
 }
 
 .lightbox.active {
@@ -951,18 +1459,23 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   height:     auto;
   object-fit: contain;
   margin:     0 auto;
-  transform:  scale(0.96);
-  opacity:    0.95;
+  transform:  scale(0.95);
   transition:
-    transform 0.5s  var(--ease-out-expo),
-    opacity   0.25s var(--ease-out-expo);
+    transform 0.25s var(--ease-in),
+    opacity   0.2s  var(--ease-smooth); /* legacy no-WAAPI swap fade */
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
   cursor: default;
 }
 
+/* Open — rise-and-settle bloom (from-only keyframe self-expires, so the WAAPI
+   directional swap keeps full ownership of transform afterwards) */
 .lightbox.active .lightbox__img {
-  transform: scale(1);
-  opacity: 1;
+  transform: none;
+  animation: lightboxBloom 0.45s var(--ease-out);
+}
+
+@keyframes lightboxBloom {
+  from { transform: scale(0.92) translateY(12px); }
 }
 
 .lightbox__close,
@@ -975,10 +1488,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    color            0.3s,
-    background-color 0.3s,
-    transform        0.35s var(--ease-out-expo);
+  opacity: 0;
   border-radius: 50%;
 }
 
@@ -986,6 +1496,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   top: 1.25rem;
   right: 1.25rem;
   font-size: 2rem;
+  transition:
+    color            0.3s,
+    background-color 0.3s,
+    transform        0.35s var(--ease-out-expo),
+    opacity          0.25s var(--ease-in);
 }
 
 .lightbox__prev,
@@ -994,6 +1509,39 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   transform: translateY(-50%);
   font-size: 2.8rem;
   background-color: rgba(255, 255, 255, 0.06);
+  transition:
+    color            0.3s,
+    background-color 0.3s,
+    transform        0.35s var(--ease-spring), /* spring use 3 of 3 — arrow nudge */
+    opacity          0.25s var(--ease-in);
+}
+
+/* Chrome staggers in AFTER the image — film-title order */
+.lightbox.active .lightbox__close {
+  opacity: 1;
+  transition:
+    color            0.3s,
+    background-color 0.3s,
+    transform        0.35s var(--ease-out-expo),
+    opacity          var(--t-modal) var(--ease-out) 0.15s;
+}
+
+.lightbox.active .lightbox__prev {
+  opacity: 1;
+  transition:
+    color            0.3s,
+    background-color 0.3s,
+    transform        0.35s var(--ease-spring),
+    opacity          var(--t-modal) var(--ease-out) 0.2s;
+}
+
+.lightbox.active .lightbox__next {
+  opacity: 1;
+  transition:
+    color            0.3s,
+    background-color 0.3s,
+    transform        0.35s var(--ease-spring),
+    opacity          var(--t-modal) var(--ease-out) 0.25s;
 }
 
 .lightbox__prev { left: 1rem; }
@@ -1008,6 +1556,17 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
 .lightbox__prev:hover { transform: translateY(-50%) translateX(-3px); }
 .lightbox__next:hover { transform: translateY(-50%) translateX(3px); }
+
+.lightbox__close:active {
+  transform: scale(0.9);
+  transition-duration: var(--t-press);
+}
+
+.lightbox__prev:active,
+.lightbox__next:active {
+  transform: translateY(-50%) scale(0.9);
+  transition-duration: var(--t-press);
+}
 
 /* ============================================================
    LOCATIONS — Dark section
@@ -1051,6 +1610,24 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   transform: translateY(-2px);
 }
 
+/* !important beats the inline reveal-stagger delay — press must answer instantly */
+.locations__card:active {
+  transform: scale(0.995);
+  transition-duration: 0.12s;
+  transition-delay: 0s !important;
+}
+
+/* The reveal engine owns transform at higher specificity once .visible — re-win it */
+html.js .locations__card[data-animate].visible:hover {
+  transform: translateY(-2px);
+}
+
+html.js .locations__card[data-animate].visible:active {
+  transform: scale(0.995);
+  transition-duration: 0.12s;
+  transition-delay: 0s !important;
+}
+
 .locations__info {
   padding: 2.5rem;
   display: flex;
@@ -1086,6 +1663,22 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   background-color: #2A2421;
 }
 
+/* Two-beat reveal — frame lands first, the map materializes +0.25s later
+   (also masks Yandex tile pop-in); the map canvas itself never moves */
+html.js .locations__card[data-animate] .locations__map {
+  opacity: 0;
+  transform: scale(0.985);
+  transition:
+    opacity   0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--reveal-delay, 0s) + 0.25s);
+}
+
+html.js .locations__card[data-animate].visible .locations__map {
+  opacity: 1;
+  transform: scale(1);
+}
+
 /* ============================================================
    CTA / BOOKING
    ============================================================ */
@@ -1104,6 +1697,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   letter-spacing: 0.1em;
   margin-bottom: 0.5rem;
   color: var(--color-dark);
+}
+
+/* Title card — big type lands from a heavier blur than body-copy splits */
+html.js .cta__title:not(.visible) .char {
+  filter: blur(10px);
 }
 
 .cta__subtitle {
@@ -1130,11 +1728,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   border-radius: 2px;
   position: relative;
   overflow: hidden;
+  /* magnetic vars default 0 — safe with the entrance reveal */
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
   transition:
-    transform        0.4s var(--ease-out-expo),
+    transform        0.5s var(--ease-spring), /* spring use 2 of 3 — magnetic release settle */
     box-shadow       0.4s var(--ease-out-expo),
-    background-color 0.4s var(--ease-smooth),
-    letter-spacing   0.4s var(--ease-out-expo);
+    background-color 0.4s var(--ease-smooth);
 }
 
 .cta__button::before {
@@ -1147,10 +1746,13 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .cta__button:hover {
-  transform: translateY(-3px) scale(1.03);
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) translateY(-3px) scale(1.03);
   box-shadow: var(--shadow-accent);
   background-color: var(--color-accent-hover);
-  letter-spacing: 0.18em;
+  transition:
+    transform        0.25s var(--ease-out), /* elastic follow while hovered */
+    box-shadow       0.4s  var(--ease-out-expo),
+    background-color 0.4s  var(--ease-smooth);
 }
 
 .cta__button:hover::before {
@@ -1158,7 +1760,46 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .cta__button:active {
-  transform: translateY(-1px) scale(1.01);
+  /* press compresses, never lifts */
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) translateY(-1px) scale(0.98);
+  transition-duration: var(--t-press);
+  transition-timing-function: var(--ease-smooth);
+}
+
+/* Idle attract shimmer — IO-gated; first sweep 1.1s after the section reveals,
+   then "the light catches the blade" every 6s */
+.cta--inview .cta__button::before {
+  animation: ctaShine 6s var(--ease-out) 1.1s infinite;
+}
+
+/* Hover suspends the idle cycle so the transition-based sweep can play —
+   a running animation owns transform and would make hover do nothing */
+.cta--inview .cta__button:hover::before {
+  animation: none;
+}
+
+@keyframes ctaShine {
+  0%   { transform: translateX(-110%); }
+  20%  { transform: translateX(110%); }
+  100% { transform: translateX(110%); }
+}
+
+/* Ripple — press feedback where hover doesn't exist */
+.cta__button .ripple {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  border-radius: 50%;
+  background-color: rgba(201, 169, 110, 0.35);
+  pointer-events: none;
+  transform: scale(0);
+  animation: rippleGrow 0.6s var(--ease-out) forwards;
+}
+
+@keyframes rippleGrow {
+  from { transform: scale(0);   opacity: 1; }
+  to   { transform: scale(3.5); opacity: 0; }
 }
 
 .cta__socials {
@@ -1191,16 +1832,33 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   transform: translateY(-3px) rotate(-3deg);
 }
 
-.cta__social[href="#"] {
+.cta__social:active {
+  transform: translateY(0) scale(0.92);
+  transition-duration: var(--t-press);
+  transition-timing-function: var(--ease-smooth);
+}
+
+/* Disabled — motion silence signals dead ends */
+.cta__social[href="#"],
+.cta__social[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.cta__social[href="#"]:hover {
+.cta__social[href="#"]:hover,
+.cta__social[href="#"]:active,
+.cta__social[aria-disabled="true"]:hover,
+.cta__social[aria-disabled="true"]:active {
   color: var(--color-dark);
   background-color: transparent;
   border-color: rgba(31, 28, 25, 0.15);
   transform: none;
+}
+
+/* The shared reveal resolve forces opacity 1 — disabled socials keep their dimming */
+html.js .cta__social[href="#"][data-animate].visible,
+html.js .cta__social[aria-disabled="true"][data-animate].visible {
+  opacity: 0.45;
 }
 
 /* ============================================================
@@ -1254,19 +1912,23 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   font-family: var(--font-body);
   font-size: 1rem;
   color: rgba(232, 228, 222, 0.72);
-  transition: color 0.35s var(--ease-smooth);
+  transition:
+    color     0.35s var(--ease-smooth),
+    transform var(--t-press) var(--ease-smooth);
   position: relative;
 }
 
+/* Underline draws in from the left, exits stage right */
 .footer__phone::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: 0;
   bottom: -3px;
   width: 100%;
   height: 1px;
   background-color: var(--color-accent);
-  transform: translateX(-50%) scaleX(0);
+  transform: scaleX(0);
+  transform-origin: right;
   transition: transform 0.35s var(--ease-out-expo);
 }
 
@@ -1275,7 +1937,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 }
 
 .footer__phone:hover::after {
-  transform: translateX(-50%) scaleX(1);
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.footer__phone:active {
+  transform: scale(0.98);
 }
 
 .footer__socials {
@@ -1298,6 +1965,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 .footer__socials a:hover {
   color: var(--color-accent);
   transform: translateY(-3px);
+}
+
+.footer__socials a:active {
+  transform: translateY(0) scale(0.92);
+  transition-duration: var(--t-press);
+  transition-timing-function: var(--ease-smooth);
 }
 
 .footer__copy {
@@ -1333,6 +2006,53 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
   .nav__menu.open {
     transform: translateX(0);
+    visibility: visible;
+  }
+
+  /* Close is faster than open — everything exits together.
+     visibility flips after the slide-out so the closed drawer's children
+     leave the tab order with no visual change */
+  .nav__menu:not(.open) {
+    visibility: hidden;
+    transition:
+      transform  0.35s var(--ease-in),
+      visibility 0s 0.35s;
+  }
+
+  /* Drawer child stagger */
+  html.js .nav__menu .nav__link,
+  html.js .nav__menu .nav__cta {
+    opacity: 0;
+    transform: translateX(32px);
+    transition:
+      opacity   0.45s var(--ease-out),
+      transform 0.45s var(--ease-out);
+  }
+
+  html.js .nav__menu.open .nav__link,
+  html.js .nav__menu.open .nav__cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav__menu.open .nav__link:nth-child(1) { transition-delay: 0.08s; }
+  .nav__menu.open .nav__link:nth-child(2) { transition-delay: 0.14s; }
+  .nav__menu.open .nav__link:nth-child(3) { transition-delay: 0.20s; }
+  .nav__menu.open .nav__link:nth-child(4) { transition-delay: 0.26s; }
+  .nav__menu.open .nav__cta               { transition-delay: 0.32s; }
+
+  /* Press must still answer while the drawer is open — the stagger resolve
+     outranks the global :active rules */
+  html.js .nav__menu.open .nav__link:active {
+    transform: translateY(1px);
+    transition-duration: var(--t-press);
+    transition-delay: 0s;
+  }
+
+  html.js .nav__menu.open .nav__cta:active {
+    transform: scale(0.97);
+    transition-duration: var(--t-press);
+    transition-delay: 0s;
   }
 
   .nav__menu .nav__link {
@@ -1356,6 +2076,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 
   .hero__tagline {
     font-size: clamp(1.1rem, 5vw, 1.6rem);
+  }
+
+  /* Reduced focus-pull radius on mobile */
+  .hero__bg {
+    --focus-blur: 8px;
   }
 
   .services__grid {
@@ -1387,7 +2112,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
   .gallery__item:nth-child(n) {
     grid-column: auto;
     grid-row: auto;
-    transform: none !important;
+    --edit-offset: 0px;
     aspect-ratio: 1/1;
   }
 
@@ -1483,14 +2208,17 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
-  body { opacity: 1; }
+  body,
+  html.js body { opacity: 1; }
 
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 
   [data-animate] {
@@ -1499,5 +2227,56 @@ html::-webkit-scrollbar-thumb:hover { background: var(--color-accent-hover); }
     filter: none !important;
   }
 
-  .hero__bg { animation: none; }
+  [data-animate] .word,
+  [data-animate] .char {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  html.js [data-animate="words"],
+  html.js [data-animate="chars"] { opacity: 1 !important; }
+
+  /* Hero words reveal via keyframe forwards-fill and the h1 carries no
+     [data-animate] — force visible in case RM flips on mid-session after
+     the splitter has already run (otherwise ЛЕЗВИЕ. goes invisible) */
+  .hero__tagline .word {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* [data-animate] transform:none would knock the indicator off its
+     translateX(-50%) centering — restore it */
+  .hero__scroll-indicator { transform: translateX(-50%) !important; }
+
+  .barbers__img-wrap::before { display: none; }
+
+  /* Curtain descendants forced to identity (parent covered by the universal override) */
+  html.js [data-animate="curtain"] .barbers__img-wrap img,
+  html.js [data-animate="curtain"] .barbers__name {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  .services__card--birthday .beam,
+  .word--brand,
+  .cta__button::before { animation: none !important; }
+
+  .hero__bg { animation: none; filter: none; }
+
+  /* Locations map descendant reveal forced visible */
+  html.js .locations__card[data-animate] .locations__map {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Disabled socials keep their dimming (beats [data-animate] opacity 1) */
+  .cta__social[href="#"],
+  .cta__social[aria-disabled="true"] { opacity: 0.45 !important; }
+
+  /* Progress bar stays (position feedback) — JS writes it with no smoothing */
+  .nav__progress { animation: none !important; }
 }
