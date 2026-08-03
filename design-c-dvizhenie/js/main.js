@@ -677,6 +677,56 @@
   }
 
   /* ==========================================================
+     7d. SERVICES LEDGER — accordion rows + price tickers
+     ========================================================== */
+  function initServiceRows() {
+    document.querySelectorAll('.services__row').forEach(function (row) {
+      var btn = row.querySelector('.services__row-head');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var open = row.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+  }
+
+  /* Number ticker — the price counts up when its row lands. The markup ships
+     the final value, so no-JS and RM both show it untouched. */
+  function initPriceTickers() {
+    var prices = document.querySelectorAll('.services__price[data-ticker]');
+    if (!prices.length) return;
+
+    function run(el) {
+      var target = parseInt(el.getAttribute('data-ticker'), 10);
+      var prefix = el.getAttribute('data-prefix') || '';
+      var suffix = el.getAttribute('data-suffix') || '';
+      var start = null;
+      var dur = 900;
+      function frame(t) {
+        if (start === null) start = t;
+        var p = Math.min((t - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        obs.unobserve(entry.target);
+        if (RM.matches) return; // final value already in the markup
+        var row = entry.target.closest('[data-delay]');
+        var delay = row ? (parseFloat(row.getAttribute('data-delay')) || 0) : 0;
+        setTimeout(function () { run(entry.target); }, delay * 1000);
+      });
+    }, { threshold: 0.6 });
+
+    prices.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ==========================================================
      8. BODY REVEAL
      ========================================================== */
   function revealBody() {
@@ -704,6 +754,8 @@
     initCtaShimmer();
     initSpotlight();
     initBeamPause();
+    initServiceRows();
+    initPriceTickers();
     revealBody();
   });
 

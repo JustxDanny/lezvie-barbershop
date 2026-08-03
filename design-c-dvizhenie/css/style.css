@@ -866,142 +866,185 @@ html.js body.is-ready .hero__content::after {
   margin-bottom: 3rem;
 }
 
-.services__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background-color: rgba(201, 169, 110, 0.18);
-  border: 1px solid rgba(201, 169, 110, 0.18);
+/* Editorial ledger — full-width typographic menu rows, no cards */
+.services__ledger {
+  max-width: 900px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(201, 169, 110, 0.18);
 }
 
-.services__card {
-  background-color: var(--color-dark-warm);
-  padding: 2.5rem 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+.services__row {
   position: relative;
-  transition:
-    background-color 0.6s var(--ease-out-expo),
-    transform        0.6s var(--ease-out-expo);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.18);
 }
 
-/* card-rise owns the reveal transition; background-color keeps its hover fade */
-html.js .services__card[data-animate="card-rise"] {
-  transition:
-    opacity          0.9s  var(--ease-out-expo),
-    transform        0.9s  var(--ease-out-expo),
-    filter           0.65s var(--ease-out-expo),
-    background-color 0.6s  var(--ease-out-expo);
+.services__row--birthday {
+  border-radius: 2px;
 }
 
-/* Spotlight — the lamp follows your hand (JS writes --mx/--my, FINE pointers only) */
-.services__card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%),
-              var(--glow-gold), transparent 65%);
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-smooth);
-}
-
+/* Hover focuses one row — the rest fall back. Dim lives on the children so it
+   never fights the reveal engine's opacity transition on the row itself */
 @media (hover: hover) and (pointer: fine) {
-  .services__card:hover::before {
-    opacity: 1;
+  .services__ledger:hover .services__row:not(:hover) .services__row-head,
+  .services__ledger:hover .services__row:not(:hover) .services__desc-wrap {
+    opacity: 0.4;
   }
 }
 
-.services__card::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%) scaleX(0);
-  transform-origin: center;
-  width: 60%;
-  height: 2px;
-  background-color: var(--color-accent);
-  transition: transform 0.6s var(--ease-out-expo);
+.services__row-heading {
+  margin: 0;
 }
 
-.services__card:hover {
-  background-color: #1C1814;
+.services__row-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 1.75rem 0.5rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  transition:
+    opacity   0.45s var(--ease-smooth),
+    transform 0.45s var(--ease-out-expo);
 }
 
-.services__card:hover::after {
-  transform: translateX(-50%) scaleX(1);
-}
-
-/* 0.05s delay — card hover → number brighten reads cause → effect */
-.services__card:hover .services__number {
-  opacity: 1;
-  transform: translateY(-2px);
-  transition-delay: 0.05s;
-}
-
-/* Touch press — spotlight's stand-in */
-html.js .services__card[data-animate="card-rise"]:active,
-.services__card:active {
-  background-color: #1C1814;
-  transform: scale(0.99);
-  transition-duration: 0.12s;
+/* Press — the ledger's tactile beat */
+.services__row-head:active {
+  transform: scale(0.995);
+  transition-duration: var(--t-press);
 }
 
 .services__number {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 2.8rem;
-  line-height: 1;
+  font-size: 0.95rem;
   color: var(--color-accent);
   opacity: 0.55;
   user-select: none;
-  margin-bottom: 0.25rem;
   transition:
-    opacity   0.5s var(--ease-out-expo),
-    transform 0.5s var(--ease-out-expo);
+    opacity   0.4s var(--ease-smooth),
+    transform 0.4s var(--ease-out-expo);
+}
+
+/* 0.05s delay — row hover → number brighten reads cause → effect */
+.services__row-head:hover .services__number {
+  opacity: 1;
+  transform: translateY(-2px);
+  transition-delay: 0.05s;
 }
 
 .services__name {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.08em;
+  font-size: clamp(1.1rem, 2.6vw, 1.65rem);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #F0ECE5;
+  transition: color 0.4s var(--ease-smooth);
+}
+
+.services__row-head:hover .services__name {
+  color: var(--color-gold-light);
+}
+
+/* Dotted gold leader — draws itself toward the price when the row lands */
+.services__leader {
+  flex: 1;
+  align-self: center;
+  height: 2px;
+  min-width: 2rem;
+  background-image: radial-gradient(circle, rgba(201, 169, 110, 0.55) 1px, transparent 1.5px);
+  background-size: 10px 2px;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+
+html.js .services__leader {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-out-expo) calc(var(--reveal-delay, 0s) + 0.3s);
+}
+
+html.js .services__row.visible .services__leader {
+  transform: scaleX(1);
 }
 
 .services__price {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
   color: var(--color-accent);
-  margin-bottom: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Description — accordion via grid-rows. The one deliberate layout animation:
+   an accordion IS a layout change; 0fr→1fr keeps it contained and smooth.
+   Opens on hover (fine pointers), tap/click (is-open), and keyboard focus. */
+.services__desc-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.5s  var(--ease-out-expo),
+    opacity            0.45s var(--ease-smooth);
+}
+
+.services__row.is-open .services__desc-wrap,
+.services__row:focus-within .services__desc-wrap {
+  grid-template-rows: 1fr;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .services__row:hover .services__desc-wrap {
+    grid-template-rows: 1fr;
+  }
 }
 
 .services__desc {
+  min-height: 0;
+  overflow: hidden;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1.65;
   color: rgba(232, 228, 222, 0.58);
-  max-width: 280px;
+  max-width: 620px;
+  padding: 0 0.5rem 1.6rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity   0.45s var(--ease-smooth)   0.08s,
+    transform 0.45s var(--ease-out-expo) 0.08s;
 }
 
-.services__card--birthday .services__number {
+.services__row.is-open .services__desc,
+.services__row:focus-within .services__desc {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .services__row:hover .services__desc {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.services__row--birthday .services__number {
   opacity: 0.85;
 }
 
-/* Border Beam — the page's one continuous ambient effect (birthday card only) */
+/* Border Beam — the page's one continuous ambient effect (birthday row only) */
 @property --beam-angle {
   syntax: '<angle>';
   inherits: false;
   initial-value: 0deg;
 }
 
-.services__card--birthday .beam {
+.services__row--birthday .beam {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
@@ -1018,7 +1061,7 @@ html.js .services__card[data-animate="card-rise"]:active,
 }
 
 /* Runs only revealed AND on-screen (JS IO toggles .services--inview — battery) */
-.services--inview .services__card--birthday.visible .beam {
+.services--inview .services__row--birthday.visible .beam {
   animation-play-state: running;
 }
 
@@ -1027,7 +1070,7 @@ html.js .services__card[data-animate="card-rise"]:active,
 }
 
 /* No @property (Safari <16.4, detected in JS) — degrade to a static gold border */
-html.no-at-property .services__card--birthday .beam {
+html.no-at-property .services__row--birthday .beam {
   background: none;
   animation: none;
   box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.4);
@@ -2083,12 +2126,9 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
     --focus-blur: 8px;
   }
 
-  .services__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .services__card {
-    padding: 1.75rem 1.25rem;
+  .services__row-head {
+    gap: 0.85rem;
+    padding: 1.4rem 0.25rem;
   }
 
   .services__desc {
@@ -2181,12 +2221,8 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
     gap: 2.5rem;
   }
 
-  .services__card {
-    padding: 3rem 2.5rem;
-  }
-
-  .services__number {
-    font-size: 3.2rem;
+  .services__row-head {
+    padding: 2rem 0.75rem;
   }
 
   .barbers__grid {
@@ -2261,7 +2297,7 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
     animation: none !important;
   }
 
-  .services__card--birthday .beam,
+  .services__row--birthday .beam,
   .word--brand,
   .cta__button::before { animation: none !important; }
 

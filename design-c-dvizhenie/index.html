@@ -73,34 +73,62 @@
       <h2 class="services__headline" data-animate="words" data-split="words">Стиль — не разговор, стиль — действие.</h2>
       <p class="services__subtext" data-animate="fade-up" data-delay="0.35">Только по записи. Без очередей, без ожидания.</p>
 
-      <div class="services__grid">
-        <div class="services__card" data-animate="card-rise" data-delay="0.2">
-          <span class="services__number">#1</span>
-          <h3 class="services__name">Первая стрижка</h3>
-          <span class="services__price">1000₽</span>
-          <p class="services__desc">Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита.</p>
+      <div class="services__ledger">
+        <div class="services__row" data-animate="fade-up" data-delay="0.15">
+          <h3 class="services__row-heading">
+            <button class="services__row-head" type="button" aria-expanded="false" aria-controls="svcDesc1">
+              <span class="services__number" aria-hidden="true">#1</span>
+              <span class="services__name">Первая стрижка</span>
+              <span class="services__leader" aria-hidden="true"></span>
+              <span class="services__price" data-ticker="1000" data-suffix="₽">1000₽</span>
+            </button>
+          </h3>
+          <div class="services__desc-wrap" id="svcDesc1">
+            <p class="services__desc">Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита.</p>
+          </div>
         </div>
 
-        <div class="services__card" data-animate="card-rise" data-delay="0.28">
-          <span class="services__number">#2</span>
-          <h3 class="services__name">Стрижка + борода</h3>
-          <span class="services__price">1800₽</span>
-          <p class="services__desc">Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок.</p>
+        <div class="services__row" data-animate="fade-up" data-delay="0.23">
+          <h3 class="services__row-heading">
+            <button class="services__row-head" type="button" aria-expanded="false" aria-controls="svcDesc2">
+              <span class="services__number" aria-hidden="true">#2</span>
+              <span class="services__name">Стрижка + борода</span>
+              <span class="services__leader" aria-hidden="true"></span>
+              <span class="services__price" data-ticker="1800" data-suffix="₽">1800₽</span>
+            </button>
+          </h3>
+          <div class="services__desc-wrap" id="svcDesc2">
+            <p class="services__desc">Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок.</p>
+          </div>
         </div>
 
-        <div class="services__card" data-animate="card-rise" data-delay="0.36">
-          <span class="services__number">#3</span>
-          <h3 class="services__name">Отец + сын</h3>
-          <span class="services__price">1800₽</span>
-          <p class="services__desc">Две стрижки по цене комплекса. Приходи с сыном — уходите оба с новым стилем. Семейная традиция.</p>
+        <div class="services__row" data-animate="fade-up" data-delay="0.31">
+          <h3 class="services__row-heading">
+            <button class="services__row-head" type="button" aria-expanded="false" aria-controls="svcDesc3">
+              <span class="services__number" aria-hidden="true">#3</span>
+              <span class="services__name">Отец + сын</span>
+              <span class="services__leader" aria-hidden="true"></span>
+              <span class="services__price" data-ticker="1800" data-suffix="₽">1800₽</span>
+            </button>
+          </h3>
+          <div class="services__desc-wrap" id="svcDesc3">
+            <p class="services__desc">Две стрижки по цене комплекса. Приходи с сыном — уходите оба с новым стилем. Семейная традиция.</p>
+          </div>
         </div>
 
-        <div class="services__card services__card--birthday" data-animate="card-rise" data-delay="0.44">
+        <div class="services__row services__row--birthday" data-animate="fade-up" data-delay="0.39">
           <span class="beam" aria-hidden="true"></span>
-          <span class="services__number">#4</span>
-          <h3 class="services__name">День рождения</h3>
-          <span class="services__price">-30%</span>
-          <p class="services__desc">Скидка на все услуги в день рождения. Просто покажи паспорт — и праздник начнётся с нового образа.</p>
+          <h3 class="services__row-heading">
+            <button class="services__row-head" type="button" aria-expanded="false" aria-controls="svcDesc4">
+              <span class="services__number" aria-hidden="true">#4</span>
+              <span class="services__name">День рождения</span>
+              <span class="services__leader" aria-hidden="true"></span>
+              <span class="services__price" data-ticker="30" data-prefix="−" data-suffix="%">−30%</span>
+            </button>
+          </h3>
+          <div class="services__desc-wrap" id="svcDesc4">
+            <p class="services__desc">Скидка на все услуги в день рождения. Просто покажи паспорт — и праздник начнётся с нового образа.</p>
+          </div>
         </div>
       </div>
     </div>
