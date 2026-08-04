@@ -765,7 +765,7 @@
     }
 
     setTimeout(function () { intro.classList.add('intro--cutting'); }, 250);
-    setTimeout(open, 250 + 950 + 80);
+    setTimeout(open, 250 + 1350 + 80);
     intro.addEventListener('click', open); // skip hatch
 
     return true;
