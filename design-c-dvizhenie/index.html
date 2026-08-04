@@ -23,6 +23,42 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- ====== INTRO — scissors cut the curtain, the site opens (once per session) ====== -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro__half intro__half--l"><span class="intro__mark">ЛЕЗВИЕ</span></div>
+    <div class="intro__half intro__half--r"><span class="intro__mark">ЛЕЗВИЕ</span></div>
+    <div class="intro__cutline"></div>
+    <svg class="intro__scissors" viewBox="0 0 80 128">
+      <defs>
+        <linearGradient id="introSteel" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8C6A30"/>
+          <stop offset="0.45" stop-color="#E9D5A3"/>
+          <stop offset="0.55" stop-color="#F6ECCB"/>
+          <stop offset="1" stop-color="#A9853F"/>
+        </linearGradient>
+        <radialGradient id="introScrew" cx="0.35" cy="0.35" r="1">
+          <stop offset="0" stop-color="#F6ECCB"/>
+          <stop offset="0.5" stop-color="#C9A96E"/>
+          <stop offset="1" stop-color="#6E5222"/>
+        </radialGradient>
+      </defs>
+      <g class="intro__body">
+        <g class="intro__blade intro__blade--l">
+          <ellipse cx="26" cy="17" rx="8.5" ry="10" fill="none" stroke="url(#introSteel)" stroke-width="3.4"/>
+          <path d="M29 26 C33 32 37 38 40 46 C45 58 48 78 46 122 C42 96 40 72 36.5 52 C34.5 42 31.5 33 29 26 Z" fill="url(#introSteel)"/>
+          <path d="M40.5 48 C45 60 47.5 80 46 118" fill="none" stroke="#F6ECCB" stroke-width="0.9" opacity="0.7"/>
+        </g>
+        <g class="intro__blade intro__blade--r">
+          <ellipse cx="54" cy="17" rx="8.5" ry="10" fill="none" stroke="url(#introSteel)" stroke-width="3.4"/>
+          <path d="M51 26 C47 32 43 38 40 46 C35 58 32 78 34 122 C38 96 40 72 43.5 52 C45.5 42 48.5 33 51 26 Z" fill="url(#introSteel)"/>
+          <path d="M39.5 48 C35 60 32.5 80 34 118" fill="none" stroke="#F6ECCB" stroke-width="0.9" opacity="0.7"/>
+        </g>
+        <circle cx="40" cy="46" r="3.2" fill="url(#introScrew)"/>
+        <circle cx="38.9" cy="44.9" r="0.9" fill="#FFF6DC" opacity="0.9"/>
+        <circle class="intro__spark" cx="40" cy="122" r="3"/>
+      </g>
+    </svg>
+  </div>
 
   <!-- ====== STICKY NAV ====== -->
   <header class="nav" id="nav">

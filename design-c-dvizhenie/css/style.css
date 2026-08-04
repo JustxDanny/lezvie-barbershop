@@ -616,10 +616,19 @@ html.js body.is-ready .nav {
   inset: 0;
   background-size: cover;
   background-position: center;
+  animation: kenburns 32s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Focus pull waits for the intro curtain — pre-blurred until is-ready */
+html.js .hero__bg {
+  filter: blur(var(--focus-blur, 14px)) brightness(0.72);
+}
+
+html.js body.is-ready .hero__bg {
   animation:
     kenburns  32s  ease-in-out infinite alternate,
     heroFocus 1.4s var(--ease-out-expo) both;
-  will-change: transform;
 }
 
 @keyframes kenburns {
@@ -711,6 +720,10 @@ html.js body.is-ready .hero__content::after {
   opacity: 0;
   transform: translateY(24px);
   filter: blur(8px);
+}
+
+/* Word stagger starts when the curtain opens (is-ready), not at load */
+body.is-ready .hero__tagline .word {
   animation: wordReveal 0.9s var(--ease-out-expo) forwards;
 }
 
@@ -735,6 +748,9 @@ html.js body.is-ready .hero__content::after {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  body.is-ready .hero__tagline .word--brand {
     animation:
       wordReveal 0.9s var(--ease-out-expo) forwards,
       brandSheen 9s   linear infinite;
@@ -2239,6 +2255,143 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
 }
 
 /* ============================================================
+   INTRO — scissors curtain (plays once per session)
+   ============================================================ */
+.intro { display: none; } /* no-JS never sees a black screen */
+
+html.js .intro {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.intro--gone { display: none !important; }
+
+.intro__half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.05%;
+  overflow: hidden;
+  background:
+    radial-gradient(140% 100% at 50% 50%, #120E0A 0%, #0C0906 70%, #080604 100%);
+  transition: transform 0.85s var(--ease-out-expo);
+}
+
+.intro__half--l { left: 0;  box-shadow: inset -14px 0 24px -18px #000; }
+.intro__half--r { right: 0; box-shadow: inset  14px 0 24px -18px #000; }
+
+.intro--open .intro__half--l { transform: translateX(-103%); }
+.intro--open .intro__half--r { transform: translateX(103%); }
+
+/* Faint wordmark that splits with the curtain */
+.intro__mark {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(3rem, 11vw, 8rem);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 169, 110, 0.28);
+  user-select: none;
+}
+
+.intro__half--l .intro__mark { left: 0; }
+.intro__half--r .intro__mark { right: 0; }
+
+.intro__cutline {
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-image: repeating-linear-gradient(180deg, var(--color-gold) 0 9px, transparent 9px 18px);
+  transform: scaleY(0);
+  transform-origin: top center;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 5px rgba(201, 169, 110, 0.55));
+}
+
+.intro--cutting .intro__cutline {
+  animation: introCut 0.95s cubic-bezier(0.45, 0.05, 0.6, 0.95) forwards;
+}
+
+@keyframes introCut {
+  to { transform: scaleY(1); }
+}
+
+.intro__scissors {
+  position: absolute;
+  left: calc(50% - 40px);
+  top: -140px;
+  width: 80px;
+  height: 128px;
+  filter: drop-shadow(0 0 12px rgba(201, 169, 110, 0.45));
+}
+
+.intro--cutting .intro__scissors {
+  animation: introTravel 0.95s cubic-bezier(0.45, 0.05, 0.6, 0.95) forwards;
+}
+
+@keyframes introTravel {
+  to { transform: translateY(calc(100vh + 280px)); }
+}
+
+@supports (height: 100dvh) {
+  @keyframes introTravel {
+    to { transform: translateY(calc(100dvh + 280px)); }
+  }
+}
+
+.intro--open .intro__cutline,
+.intro--open .intro__scissors {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-smooth);
+}
+
+/* Whole body sways while working — a hand, not a machine */
+.intro__body { transform-origin: 40px 46px; }
+.intro--cutting .intro__body { animation: introSway 0.5s ease-in-out infinite alternate; }
+@keyframes introSway {
+  from { transform: rotate(1.6deg); }
+  to   { transform: rotate(-1.6deg); }
+}
+
+.intro__blade { transform-origin: 40px 46px; }
+.intro--cutting .intro__blade--l { animation: introSnipL 0.16s cubic-bezier(0.6, 0, 0.4, 1) infinite alternate; }
+.intro--cutting .intro__blade--r { animation: introSnipR 0.16s cubic-bezier(0.6, 0, 0.4, 1) infinite alternate; }
+@keyframes introSnipL {
+  from { transform: rotate(13deg); }
+  to   { transform: rotate(-4deg); }
+}
+@keyframes introSnipR {
+  from { transform: rotate(-13deg); }
+  to   { transform: rotate(4deg); }
+}
+
+/* Glowing ember at the cutting point */
+.intro__spark {
+  fill: #FFE9B8;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.intro--cutting .intro__spark { animation: introSpark 0.18s ease-in-out infinite alternate; }
+@keyframes introSpark {
+  from { opacity: 0.55; transform: scale(0.6); }
+  to   { opacity: 1;    transform: scale(1.6); }
+}
+
+/* ============================================================
    REDUCED MOTION
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
@@ -2301,7 +2454,10 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
   .word--brand,
   .cta__button::before { animation: none !important; }
 
-  .hero__bg { animation: none; filter: none; }
+  .hero__bg,
+  html.js .hero__bg { animation: none !important; filter: none !important; }
+
+  .intro { display: none !important; }
 
   /* Locations map descendant reveal forced visible */
   html.js .locations__card[data-animate] .locations__map {

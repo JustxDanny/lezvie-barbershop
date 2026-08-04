@@ -727,13 +727,48 @@
   }
 
   /* ==========================================================
-     8. BODY REVEAL
+     8. BODY REVEAL + INTRO CURTAIN
      ========================================================== */
   function revealBody() {
     // Next frame so initial transition applies cleanly
     requestAnimationFrame(function () {
       document.body.classList.add('is-ready');
     });
+  }
+
+  /* Scissors curtain — plays once per session; returns true if it owns
+     the is-ready reveal this load. RM and repeat visits skip straight in. */
+  function initIntro() {
+    var intro = document.getElementById('intro');
+    if (!intro) return false;
+
+    var KEY = 'lezvie-intro-seen';
+    var seen = false;
+    try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+
+    if (seen || RM.matches) {
+      intro.classList.add('intro--gone');
+      return false;
+    }
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+
+    var opened = false;
+    document.body.style.overflow = 'hidden';
+
+    function open() {
+      if (opened) return;
+      opened = true;
+      intro.classList.add('intro--open');
+      document.body.style.overflow = '';
+      revealBody(); // hero choreography fires as the halves part
+      setTimeout(function () { intro.classList.add('intro--gone'); }, 1000);
+    }
+
+    setTimeout(function () { intro.classList.add('intro--cutting'); }, 250);
+    setTimeout(open, 250 + 950 + 80);
+    intro.addEventListener('click', open); // skip hatch
+
+    return true;
   }
 
   /* ==========================================================
@@ -756,7 +791,7 @@
     initBeamPause();
     initServiceRows();
     initPriceTickers();
-    revealBody();
+    if (!initIntro()) revealBody();
   });
 
   window.addEventListener('load', initMaps);
