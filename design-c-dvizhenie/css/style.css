@@ -839,6 +839,7 @@ body.is-ready .hero__tagline .word {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--color-accent);
+  margin-top: 2.5rem; /* sits below the hook now — header of the price ledger */
   margin-bottom: 0.75rem;
   text-align: center;
 }
@@ -1722,7 +1723,7 @@ html.js .locations__card[data-animate].visible:active {
 }
 
 .locations__map {
-  min-height: 250px;
+  min-height: 200px; /* -20% per Daniel */
   background-color: #2A2421;
 }
 
@@ -2188,7 +2189,7 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
   }
 
   .locations__map {
-    min-height: 200px;
+    min-height: 160px;
   }
 
   .cta__title {
