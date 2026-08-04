@@ -6,6 +6,14 @@
 (function () {
   'use strict';
 
+  /* ---------- Global gates ---------- */
+  var RM   = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var FINE = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  /* must stay in sync with :root easings */
+  var EASE_OUT = 'cubic-bezier(0.16,1,0.3,1)';
+  var EASE_IN  = 'cubic-bezier(0.7,0,0.84,0)';
+
   var STORAGE_KEY = 'lezvie-c-gallery';
 
   /* Default gallery images */
@@ -15,17 +23,14 @@
     { src: '../shared/img/gallery-3.jpg', alt: 'Галерея 3' },
     { src: '../shared/img/gallery-4.jpg', alt: 'Галерея 4' },
     { src: '../shared/img/gallery-5.jpg', alt: 'Галерея 5' },
-    { src: '../shared/img/gallery-6.jpg', alt: 'Галерея 6' },
-    { src: '../shared/img/gallery-7.jpg', alt: 'Галерея 7' },
-    { src: '../shared/img/gallery-8.jpg', alt: 'Галерея 8' },
-    { src: '../shared/img/gallery-9.jpg', alt: 'Галерея 9' }
+    { src: '../shared/img/gallery-6.jpg', alt: 'Галерея 6' }
   ];
 
   /* Parallax speeds per item (varied for depth) */
-  var PARALLAX_SPEEDS = [0.08, -0.05, 0.1, -0.06, 0.04, -0.08, 0.07, -0.04, 0.06];
+  var PARALLAX_SPEEDS = [0.08, -0.05, 0.1, -0.06, 0.04, -0.08];
 
   /* Animation delays for stagger */
-  var ANIM_DELAYS = [0, 0.1, 0.2, 0.15, 0.25, 0.3, 0.1, 0.2, 0.35];
+  var ANIM_DELAYS = [0, 0.1, 0.2, 0.15, 0.25, 0.3];
 
   var gridEl, lightboxEl, lightboxImg;
   var currentImages = [];
@@ -38,15 +43,58 @@
     img.src = src;
   }
 
-  function swapImg(src, alt) {
+  /* Directional WAAPI swap — old img exits opposite to travel, the new one
+     arrives from the pressed direction. dir: +1 next, -1 prev. */
+  function swapImg(src, alt, dir) {
     if (!lightboxImg) return;
-    // Fade via opacity for smoother transition
-    lightboxImg.style.opacity = '0';
-    setTimeout(function () {
+
+    // RM — jump-cut swap
+    if (RM.matches) {
       lightboxImg.src = src;
       lightboxImg.alt = alt || '';
-      lightboxImg.style.opacity = '';
-    }, 140);
+      return;
+    }
+
+    // No WAAPI — keep the plain opacity fade
+    if (!('animate' in Element.prototype)) {
+      lightboxImg.style.opacity = '0';
+      setTimeout(function () {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightboxImg.style.opacity = '';
+      }, 140);
+      return;
+    }
+
+    dir = dir || 1;
+    // Cancel stale animations (rapid clicks / failed loads leave forwards fills)
+    if (lightboxImg.getAnimations) {
+      lightboxImg.getAnimations().forEach(function (a) { a.cancel(); });
+    }
+    var out = lightboxImg.animate(
+      [{ opacity: 1, transform: 'translateX(0)' },
+       { opacity: 0, transform: 'translateX(' + (dir * -28) + 'px)' }],
+      { duration: 160, easing: EASE_IN, fill: 'forwards' });
+
+    out.finished.then(function () {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt || '';
+      var go = function () {
+        var arrive = lightboxImg.animate(
+          [{ opacity: 0, transform: 'translateX(' + (dir * 28) + 'px)' },
+           { opacity: 1, transform: 'translateX(0)' }],
+          { duration: 260, easing: EASE_OUT });
+        // Release the out-animation's forwards fill once the new img has landed
+        arrive.onfinish = function () { out.cancel(); };
+      };
+      // Load gate kills flash-of-empty on slow networks
+      if (lightboxImg.complete) go();
+      else {
+        lightboxImg.addEventListener('load', go, { once: true });
+        // Failed load: release the forwards fill so the lightbox isn't stuck blank
+        lightboxImg.addEventListener('error', function () { out.cancel(); }, { once: true });
+      }
+    });
   }
 
   /* ---------- Load images from localStorage or default ---------- */
@@ -74,15 +122,20 @@
     gridEl.innerHTML = '';
 
     currentImages.forEach(function (img, i) {
+      /* Three-layer transform split — outer owns parallax (inline translate3d),
+         inner owns the zoom-in reveal + editorial offset, img owns hover/press */
       var item = document.createElement('div');
       item.className = 'gallery__item';
-      item.setAttribute('data-animate', 'fade-up');
-      item.setAttribute('data-delay', String(ANIM_DELAYS[i % ANIM_DELAYS.length]));
 
       // Parallax only on desktop
       if (window.innerWidth >= 768) {
         item.setAttribute('data-parallax', String(PARALLAX_SPEEDS[i % PARALLAX_SPEEDS.length]));
       }
+
+      var inner = document.createElement('div');
+      inner.className = 'gallery__item-inner';
+      inner.setAttribute('data-animate', 'zoom-in');
+      inner.setAttribute('data-delay', String(ANIM_DELAYS[i % ANIM_DELAYS.length]));
 
       var imgEl = document.createElement('img');
       imgEl.src = img.src;
@@ -93,9 +146,22 @@
       imgEl.width  = 800;
       imgEl.height = 600;
 
-      item.appendChild(imgEl);
+      inner.appendChild(imgEl);
+      item.appendChild(inner);
+
+      // Keyboard access — cursor:zoom-in advertises interactivity, so keyboard
+      // users must be able to reach and trigger it too
+      item.tabIndex = 0;
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', imgEl.alt);
       item.addEventListener('click', function () {
         openLightbox(i);
+      });
+      item.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(i);
+        }
       });
 
       gridEl.appendChild(item);
@@ -103,6 +169,12 @@
 
     // Re-init scroll observer for newly added elements
     initGalleryObserver();
+
+    // Register late-rendered items with the parallax engine (fixes the
+    // DOMContentLoaded ordering race — main.js queries before we render)
+    if (typeof window.__lezvieParallax === 'function') {
+      window.__lezvieParallax(gridEl.querySelectorAll('[data-parallax]'));
+    }
   }
 
   /* ---------- Scroll observer via shared helper from main.js ---------- */
@@ -118,7 +190,10 @@
     // Fallback if main.js failed to load
     items.forEach(function (el) {
       var d = el.getAttribute('data-delay');
-      if (d) el.style.transitionDelay = d + 's';
+      if (d) {
+        el.style.transitionDelay = d + 's';
+        el.style.setProperty('--reveal-delay', d + 's');
+      }
     });
     var obs = new IntersectionObserver(function (entries, o) {
       entries.forEach(function (e) {
@@ -139,6 +214,10 @@
 
     lastFocus = document.activeElement;
     currentIndex = index;
+    // Clear any stuck WAAPI fills from a previous session's failed swap
+    if (lightboxImg.getAnimations) {
+      lightboxImg.getAnimations().forEach(function (a) { a.cancel(); });
+    }
     lightboxImg.src = currentImages[currentIndex].src;
     lightboxImg.alt = currentImages[currentIndex].alt || '';
     lightboxEl.classList.add('active');
@@ -164,7 +243,7 @@
     if (!currentImages.length) return;
     var n = currentImages.length;
     currentIndex = (currentIndex + dir + n) % n;
-    swapImg(currentImages[currentIndex].src, currentImages[currentIndex].alt);
+    swapImg(currentImages[currentIndex].src, currentImages[currentIndex].alt, dir);
     preload(currentImages[(currentIndex + dir + n) % n].src);
   }
 
@@ -195,7 +274,35 @@
       if (e.key === 'Escape') closeLightbox();
       else if (e.key === 'ArrowLeft') prevImage();
       else if (e.key === 'ArrowRight') nextImage();
+      else if (e.key === 'Tab') {
+        // Focus trap — role=dialog must not leak focus to the page behind
+        var focusables = [closeBtn, prevBtn, nextBtn].filter(Boolean);
+        if (!focusables.length) return;
+        var idx = focusables.indexOf(document.activeElement);
+        e.preventDefault();
+        var next = e.shiftKey
+          ? (idx <= 0 ? focusables.length - 1 : idx - 1)
+          : (idx === -1 || idx === focusables.length - 1 ? 0 : idx + 1);
+        focusables[next].focus();
+      }
     });
+
+    // Swipe — the mobile replacement for hover-discoverable arrows
+    var touchX = 0;
+    var touchY = 0;
+
+    lightboxEl.addEventListener('touchstart', function (e) {
+      touchX = e.changedTouches[0].clientX;
+      touchY = e.changedTouches[0].clientY;
+    }, { passive: true });
+
+    lightboxEl.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - touchX;
+      var dy = e.changedTouches[0].clientY - touchY;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > 2 * Math.abs(dy)) {
+        step(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
   }
 
   /* ---------- INIT ---------- */
