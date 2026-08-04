@@ -843,14 +843,13 @@ body.is-ready .hero__tagline .word {
 }
 
 .services__headline {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-style: italic;
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
   text-align: center;
   color: #F0ECE5;
   margin-bottom: 0.5rem;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.04em;
   position: relative;
 }
 

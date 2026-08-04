@@ -16,14 +16,14 @@
 
   var STORAGE_KEY = 'lezvie-c-gallery';
 
-  /* Default gallery images */
+  /* Default gallery images — real shots from the shop's VK */
   var DEFAULT_IMAGES = [
-    { src: '../shared/img/gallery-1.jpg', alt: 'Галерея 1' },
-    { src: '../shared/img/gallery-2.jpg', alt: 'Галерея 2' },
-    { src: '../shared/img/gallery-3.jpg', alt: 'Галерея 3' },
-    { src: '../shared/img/gallery-4.jpg', alt: 'Галерея 4' },
-    { src: '../shared/img/gallery-5.jpg', alt: 'Галерея 5' },
-    { src: '../shared/img/gallery-6.jpg', alt: 'Галерея 6' }
+    { src: 'img/gallery-vk-1.jpg', alt: 'Фейд — чистая работа' },
+    { src: 'img/gallery-vk-2.jpg', alt: 'Классический фейд с бородой' },
+    { src: 'img/gallery-vk-3.jpg', alt: 'Помпадур — результат мастера' },
+    { src: 'img/gallery-vk-4.jpg', alt: 'Бритьё опасной бритвой' },
+    { src: 'img/gallery-vk-5.jpg', alt: 'Мастер за работой' },
+    { src: 'img/gallery-vk-6.jpg', alt: 'Медали чемпионата — команда ЛЕЗВИЕ' }
   ];
 
   /* Parallax speeds per item (varied for depth) */
