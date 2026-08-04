@@ -764,8 +764,25 @@
       setTimeout(function () { intro.classList.add('intro--gone'); }, 1000);
     }
 
-    setTimeout(function () { intro.classList.add('intro--cutting'); }, 250);
-    setTimeout(open, 250 + 1350 + 80);
+    /* Anchor the cut to the moment the page is actually PAINTED (window load),
+       not DOMContentLoaded — on slow connections the old timing finished the
+       whole cut before the first visible frame. The curtain itself is pure CSS,
+       so it holds the screen while resources stream in; a cap guarantees the
+       show starts even if some resource hangs. */
+    var started = false;
+    function begin() {
+      if (started || opened) return;
+      started = true;
+      setTimeout(function () { intro.classList.add('intro--cutting'); }, 500);
+      setTimeout(open, 500 + 1350 + 120);
+    }
+
+    if (document.readyState === 'complete') {
+      begin();
+    } else {
+      window.addEventListener('load', begin, { once: true });
+      setTimeout(begin, 3500); // cap — never hold the site hostage
+    }
     intro.addEventListener('click', open); // skip hatch
 
     return true;
