@@ -727,65 +727,13 @@
   }
 
   /* ==========================================================
-     8. BODY REVEAL + INTRO CURTAIN
+     8. BODY REVEAL
      ========================================================== */
   function revealBody() {
     // Next frame so initial transition applies cleanly
     requestAnimationFrame(function () {
       document.body.classList.add('is-ready');
     });
-  }
-
-  /* Scissors curtain — plays once per session; returns true if it owns
-     the is-ready reveal this load. RM and repeat visits skip straight in. */
-  function initIntro() {
-    var intro = document.getElementById('intro');
-    if (!intro) return false;
-
-    var KEY = 'lezvie-intro-seen';
-    var seen = false;
-    try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
-
-    if (seen || RM.matches) {
-      intro.classList.add('intro--gone');
-      return false;
-    }
-    try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
-
-    var opened = false;
-    document.body.style.overflow = 'hidden';
-
-    function open() {
-      if (opened) return;
-      opened = true;
-      intro.classList.add('intro--open');
-      document.body.style.overflow = '';
-      revealBody(); // hero choreography fires as the halves part
-      setTimeout(function () { intro.classList.add('intro--gone'); }, 1000);
-    }
-
-    /* Anchor the cut to the moment the page is actually PAINTED (window load),
-       not DOMContentLoaded — on slow connections the old timing finished the
-       whole cut before the first visible frame. The curtain itself is pure CSS,
-       so it holds the screen while resources stream in; a cap guarantees the
-       show starts even if some resource hangs. */
-    var started = false;
-    function begin() {
-      if (started || opened) return;
-      started = true;
-      setTimeout(function () { intro.classList.add('intro--cutting'); }, 500);
-      setTimeout(open, 500 + 1350 + 120);
-    }
-
-    if (document.readyState === 'complete') {
-      begin();
-    } else {
-      window.addEventListener('load', begin, { once: true });
-      setTimeout(begin, 3500); // cap — never hold the site hostage
-    }
-    intro.addEventListener('click', open); // skip hatch
-
-    return true;
   }
 
   /* ==========================================================
@@ -808,7 +756,7 @@
     initBeamPause();
     initServiceRows();
     initPriceTickers();
-    if (!initIntro()) revealBody();
+    revealBody();
   });
 
   window.addEventListener('load', initMaps);
