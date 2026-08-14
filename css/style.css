@@ -2554,3 +2554,238 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
   /* Progress bar stays (position feedback) — JS writes it with no smoothing */
   .nav__progress { animation: none !important; }
 }
+
+/* ============================================================
+   PRELOADER — real-asset loading gate + curtain reveal
+   Engine: js/preloader.js. Skins via ?loader=1|2|3 (default 1).
+   Global reduced-motion block above already collapses all of
+   this to an instant reveal.
+   ============================================================ */
+
+html.is-preloading { overflow: hidden; }
+
+/* Hold the hero tagline entrance until the curtain starts opening —
+   otherwise it plays unseen behind the overlay */
+html.is-preloading .hero__tagline .word { animation-play-state: paused !important; }
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  --pl-p: 0;
+}
+html.js .preloader { display: block; }
+.preloader--open { pointer-events: none; }
+
+/* ---------- Curtain panels ---------- */
+.pl__panel {
+  position: absolute;
+  z-index: 1;
+  background: var(--color-dark-warm);
+  transition: transform 0.9s var(--ease-out-expo);
+  will-change: transform;
+}
+
+/* Skin 1 — vertical seam, panels part left/right */
+[data-skin="1"] .pl__panel--a { top: 0; bottom: 0; left: 0;  width: 50.5%; }
+[data-skin="1"] .pl__panel--b { top: 0; bottom: 0; right: 0; width: 50.5%; }
+.preloader--open[data-skin="1"] .pl__panel--a { transform: translateX(-101%); transition-delay: 0.18s; }
+.preloader--open[data-skin="1"] .pl__panel--b { transform: translateX(101%);  transition-delay: 0.18s; }
+
+[data-skin="1"] .pl__seam {
+  position: absolute;
+  z-index: 2;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent,
+    var(--color-gold) 28%,
+    var(--color-gold-light) 50%,
+    var(--color-gold) 72%,
+    transparent);
+  opacity: 0;
+  transform: scaleY(0.15);
+  transform-origin: center;
+}
+.preloader--open[data-skin="1"] .pl__seam { animation: plSeam 0.7s var(--ease-out) forwards; }
+@keyframes plSeam {
+  0%   { opacity: 0; transform: scaleY(0.15); }
+  25%  { opacity: 1; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+
+/* Skin 2 — panels part up/down */
+[data-skin="2"] .pl__panel--a { left: 0; right: 0; top: 0;    height: 50.5%; }
+[data-skin="2"] .pl__panel--b { left: 0; right: 0; bottom: 0; height: 50.5%; }
+.preloader--open[data-skin="2"] .pl__panel--a { transform: translateY(-101%); transition-delay: 0.1s; }
+.preloader--open[data-skin="2"] .pl__panel--b { transform: translateY(101%);  transition-delay: 0.1s; }
+
+/* Skin 3 — single curtain lifts up */
+[data-skin="3"] .pl__panel--solo { inset: 0; }
+.preloader--open[data-skin="3"] .pl__panel--solo {
+  transform: translateY(-101%);
+  transition-duration: 0.85s;
+  transition-delay: 0.1s;
+}
+
+/* ---------- Shared UI ---------- */
+.pl__ui {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: opacity 0.2s var(--ease-in);
+}
+.preloader--open .pl__ui { opacity: 0; }
+
+.pl__brand {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* optical centering of the tracking */
+  color: var(--color-bg);
+  opacity: 0.92;
+}
+
+.pl__track {
+  position: relative;
+  width: min(420px, 68vw);
+  height: 2px;
+  background: rgba(242, 239, 234, 0.14);
+}
+
+.pl__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    var(--color-gold-deep),
+    var(--color-gold) 60%,
+    var(--color-gold-light));
+  transform: scaleX(calc(var(--pl-p) / 100));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.pl__pct {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  min-width: 4ch;
+  text-align: center;
+}
+
+/* ---------- Skin 1: blade riding the strop line ---------- */
+.pl__rail {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(var(--pl-p) * 1%));
+  pointer-events: none;
+  will-change: transform;
+}
+.pl__blade {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 26px;
+  height: 7px;
+  transform: translate(-50%, -50%) skewX(-28deg);
+  background: linear-gradient(90deg,
+    var(--color-gold-light),
+    var(--color-gold) 55%,
+    var(--color-gold-deep));
+  box-shadow: 0 0 14px rgba(226, 200, 140, 0.55);
+}
+
+/* ---------- Skin 2: barber pole ---------- */
+.pl__pole {
+  position: relative;
+  width: 54px;
+  height: 132px;
+  border-radius: 27px;
+  overflow: hidden;
+  background: var(--color-bg);
+  box-shadow:
+    inset 0 0 0 2px rgba(201, 169, 110, 0.55),
+    inset 10px 0 16px rgba(21, 17, 14, 0.35),
+    inset -10px 0 16px rgba(21, 17, 14, 0.35);
+}
+.pl__stripes {
+  position: absolute;
+  left: -30px;
+  right: -30px;
+  top: -100px;
+  height: calc(100% + 200px);
+  background: repeating-linear-gradient(135deg,
+    var(--color-accent) 0 14px,
+    var(--color-bg) 14px 28px,
+    var(--color-gold) 28px 42px,
+    var(--color-bg) 42px 56px);
+  animation: plPole 1.4s linear infinite;
+  will-change: transform;
+}
+/* 56px period along a 135deg axis = 79.2px vertical period — seamless loop */
+@keyframes plPole {
+  to { transform: translateY(79.2px); }
+}
+[data-skin="2"] .pl__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: min(420px, 68vw);
+}
+[data-skin="2"] .pl__ui { gap: 32px; }
+[data-skin="2"] .pl__pct { min-width: 0; text-align: right; }
+
+/* ---------- Skin 3: editorial counter ---------- */
+.pl__ui--corner {
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 clamp(24px, 6vw, 80px) clamp(32px, 8vh, 84px);
+}
+.pl__label {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.42em;
+  color: var(--color-gold);
+}
+.pl__num {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(96px, 17vw, 220px);
+  line-height: 0.9;
+  color: var(--color-bg);
+  display: flex;
+  align-items: baseline;
+}
+.pl__num .pl__pct {
+  font-size: inherit;
+  letter-spacing: 0;
+  color: inherit;
+  min-width: 1.2em;
+  text-align: left;
+}
+.pl__pctsign {
+  font-size: 0.22em;
+  font-weight: 500;
+  color: var(--color-gold);
+  margin-left: 0.2em;
+}
+.pl__baseline {
+  position: absolute;
+  z-index: 2;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: rgba(242, 239, 234, 0.1);
+  transition: opacity 0.2s var(--ease-in);
+}
+.preloader--open .pl__baseline { opacity: 0; }
