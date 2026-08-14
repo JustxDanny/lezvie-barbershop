@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:a": "npx serve design-a-klassika -l 3001",
-    "dev:b": "npx serve design-b-minimal -l 3002",
-    "dev:c": "npx serve design-c-dvizhenie -l 3003"
+    "dev": "npx serve . -l 3003"
   }
 }

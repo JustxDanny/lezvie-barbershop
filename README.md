@@ -1,33 +1,31 @@
-# ЛЕЗВИЕ — Barbershop Landing Pages
+# ЛЕЗВИЕ — Barbershop Landing Page
 
-Three design variants for ЛЕЗВИЕ barbershop, Izhevsk.
+Landing page for ЛЕЗВИЕ barbershop, Izhevsk. Live at **https://lezvie-dvizhenie.netlify.app**
+
+Static HTML/CSS/JS — no framework, no backend, no database. Editorial design, scroll animations, parallax, terracotta/gold accent.
 
 ## Run locally
 
 ```bash
-npm run dev:a   # Design A "Классика" → http://localhost:3001
-npm run dev:b   # Design B "Минимал" → http://localhost:3002
-npm run dev:c   # Design C "Движение" → http://localhost:3003
+npm run dev   # → http://localhost:3003
 ```
 
-## Designs
+## Content management
 
-- **Design A "Классика"** — Warm, premium. Dark wood, gold accents, serif typography
-- **Design B "Минимал"** — Ultra-clean. Black & white with bold red accent
-- **Design C "Движение"** — Editorial, dynamic. Scroll animations, parallax, terracotta accent
+**No admin panel, no logins — by design.** Content (gallery photos, reviews) lives in hardcoded JS arrays and gets updated by editing code and redeploying:
+- `js/gallery.js` — gallery photo list
+- `js/reviews.js` — featured 2ГИС reviews (shuffle-bag rotation, no repeats)
 
-## Placeholder images
+## Deploy
 
-All images marked with `<!-- PLACEHOLDER: Replace with real Lezvie photo -->`
-Source real photos from: https://vk.com/lezvie_barbershop
+**Netlify CLI, not git-triggered.** A `git push` alone does not update the live site.
 
-## Admin panel
+```bash
+netlify deploy --prod --dir=. --site=a63d409a-6a40-451c-a279-c1357487ec0c
+```
 
-Each design has `/admin.html` for gallery photo management.
-Password: `lezvie2026`
+## Structure
 
-## Live URLs
-
-- **Design A "Классика":** https://lezvie-klassika.netlify.app
-- **Design B "Минимал":** https://lezvie-minimal.netlify.app
-- **Design C "Движение":** https://lezvie-dvizhenie.netlify.app
+- `index.html`, `css/`, `js/`, `img/` — the site
+- `Barbers/`, `Videos/` — raw source photos/video, not yet wired into the site
+- `tasks/` — working notes, session handoff (`HANDOFF.md`)
