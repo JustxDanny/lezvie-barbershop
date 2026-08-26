@@ -18,12 +18,12 @@
 
   /* Default gallery images — real shots from the shop's VK */
   var DEFAULT_IMAGES = [
-    { src: 'img/gallery-vk-1.jpg', alt: 'Фейд — чистая работа' },
+    { src: 'img/gallery-vk-1.jpg', alt: 'Фейд, чистая работа' },
     { src: 'img/gallery-vk-2.jpg', alt: 'Классический фейд с бородой' },
-    { src: 'img/gallery-vk-3.jpg', alt: 'Помпадур — результат мастера' },
+    { src: 'img/gallery-vk-3.jpg', alt: 'Помпадур' },
     { src: 'img/gallery-vk-4.jpg', alt: 'Бритьё опасной бритвой' },
     { src: 'img/gallery-vk-5.jpg', alt: 'Мастер за работой' },
-    { src: 'img/gallery-vk-6.jpg', alt: 'Медали чемпионата — команда ЛЕЗВИЕ' }
+    { src: 'img/gallery-vk-6.jpg', alt: 'Медали чемпионата, команда ЛЕЗВИЕ' }
   ];
 
   /* Parallax speeds per item (varied for depth) */
