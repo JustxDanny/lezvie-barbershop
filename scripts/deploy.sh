@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 PUBLISH="_site"
 
 mkdir -p "$PUBLISH"
-cp index.html robots.txt sitemap.xml "$PUBLISH/"
+cp index.html robots.txt sitemap.xml llms.txt "$PUBLISH/"
 cp -r css js img "$PUBLISH/"
 
 echo "Staged $(du -sh "$PUBLISH" | cut -f1) into $PUBLISH/"
