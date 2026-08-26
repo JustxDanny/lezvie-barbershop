@@ -26,6 +26,330 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Structured data: brand + 3 salons. No AggregateRating/Review on purpose:
+       self-hosted reviews about your own business are ineligible for rich results
+       and risk a manual action. Real review weight lives on 2GIS / Yandex Business. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://lezviebarbershop.ru/#organization",
+      "name": "ЛЕЗВИЕ",
+      "alternateName": "Lezvie Barbershop",
+      "url": "https://lezviebarbershop.ru/",
+      "logo": "https://lezviebarbershop.ru/img/hero-1.jpg",
+      "image": "https://lezviebarbershop.ru/img/hero-1.jpg",
+      "telephone": [
+        "+7-912-757-48-48",
+        "+7-912-026-10-10"
+      ],
+      "sameAs": [
+        "https://vk.com/lezvie_barbershop",
+        "https://www.instagram.com/lezvie_barbershop.izhevsk/",
+        "https://2gis.ru/izhevsk/firm/70000001038561940"
+      ],
+      "areaServed": {
+        "@type": "City",
+        "name": "Ижевск"
+      }
+    },
+    {
+      "@type": "HairSalon",
+      "@id": "https://lezviebarbershop.ru/#baryshnikova",
+      "name": "ЛЕЗВИЕ на Барышникова",
+      "parentOrganization": {
+        "@id": "https://lezviebarbershop.ru/#organization"
+      },
+      "url": "https://lezviebarbershop.ru/",
+      "image": "https://lezviebarbershop.ru/img/hero-1.jpg",
+      "telephone": [
+        "+7-912-757-48-48",
+        "+7-912-026-10-10"
+      ],
+      "priceRange": "1000-1800 ₽",
+      "currenciesAccepted": "RUB",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Барышникова, 27",
+        "addressLocality": "Ижевск",
+        "addressRegion": "Удмуртская Республика",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 56.87251,
+        "longitude": 53.29868
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "21:00"
+        }
+      ],
+      "sameAs": [
+        "https://vk.com/lezvie_barbershop",
+        "https://www.instagram.com/lezvie_barbershop.izhevsk/",
+        "https://2gis.ru/izhevsk/firm/70000001038561940"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Услуги барбершопа",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Первая стрижка",
+              "description": "Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита."
+            },
+            "price": "1000",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Стрижка + борода",
+              "description": "Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Отец + сын",
+              "description": "Две стрижки по цене комплекса. Приходи с сыном, уходите оба с новым стилем."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://dikidi.net/g313100?p=0.sp",
+          "inLanguage": "ru",
+          "actionPlatform": [
+            "http://schema.org/DesktopWebPlatform",
+            "http://schema.org/MobileWebPlatform"
+          ]
+        }
+      }
+    },
+    {
+      "@type": "HairSalon",
+      "@id": "https://lezviebarbershop.ru/#pushkinskaya",
+      "name": "ЛЕЗВИЕ на Пушкинской",
+      "parentOrganization": {
+        "@id": "https://lezviebarbershop.ru/#organization"
+      },
+      "url": "https://lezviebarbershop.ru/",
+      "image": "https://lezviebarbershop.ru/img/hero-1.jpg",
+      "telephone": [
+        "+7-912-757-48-48",
+        "+7-912-026-10-10"
+      ],
+      "priceRange": "1000-1800 ₽",
+      "currenciesAccepted": "RUB",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Пушкинская, 270",
+        "addressLocality": "Ижевск",
+        "addressRegion": "Удмуртская Республика",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 56.86417,
+        "longitude": 53.20924
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "21:00"
+        }
+      ],
+      "sameAs": [
+        "https://vk.com/lezvie_barbershop",
+        "https://www.instagram.com/lezvie_barbershop.izhevsk/",
+        "https://2gis.ru/izhevsk/firm/70000001038561940"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Услуги барбершопа",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Первая стрижка",
+              "description": "Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита."
+            },
+            "price": "1000",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Стрижка + борода",
+              "description": "Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Отец + сын",
+              "description": "Две стрижки по цене комплекса. Приходи с сыном, уходите оба с новым стилем."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://dikidi.net/g313100?p=0.sp",
+          "inLanguage": "ru",
+          "actionPlatform": [
+            "http://schema.org/DesktopWebPlatform",
+            "http://schema.org/MobileWebPlatform"
+          ]
+        }
+      }
+    },
+    {
+      "@type": "HairSalon",
+      "@id": "https://lezviebarbershop.ru/#krasnoarmeyskaya",
+      "name": "ЛЕЗВИЕ на Красноармейской",
+      "parentOrganization": {
+        "@id": "https://lezviebarbershop.ru/#organization"
+      },
+      "url": "https://lezviebarbershop.ru/",
+      "image": "https://lezviebarbershop.ru/img/hero-1.jpg",
+      "telephone": [
+        "+7-912-757-48-48",
+        "+7-912-026-10-10"
+      ],
+      "priceRange": "1000-1800 ₽",
+      "currenciesAccepted": "RUB",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Красноармейская, 164",
+        "addressLocality": "Ижевск",
+        "addressRegion": "Удмуртская Республика",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 56.84555,
+        "longitude": 53.2097
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "21:00"
+        }
+      ],
+      "sameAs": [
+        "https://vk.com/lezvie_barbershop",
+        "https://www.instagram.com/lezvie_barbershop.izhevsk/",
+        "https://2gis.ru/izhevsk/firm/70000001038561940"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Услуги барбершопа",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Первая стрижка",
+              "description": "Знакомство с ЛЕЗВИЕ. Консультация, стрижка и укладка премиум-средствами. Специальная цена для первого визита."
+            },
+            "price": "1000",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Стрижка + борода",
+              "description": "Полный комплекс: стрижка, моделирование бороды, контуринг опасной бритвой. Горячее полотенце в подарок."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Отец + сын",
+              "description": "Две стрижки по цене комплекса. Приходи с сыном, уходите оба с новым стилем."
+            },
+            "price": "1800",
+            "priceCurrency": "RUB"
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://dikidi.net/g313100?p=0.sp",
+          "inLanguage": "ru",
+          "actionPlatform": [
+            "http://schema.org/DesktopWebPlatform",
+            "http://schema.org/MobileWebPlatform"
+          ]
+        }
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <!-- ====== PRELOADER (engine: js/preloader.js — skin picker: ?loader=1|2|3, slow-net demo: &demo=1) ====== -->
