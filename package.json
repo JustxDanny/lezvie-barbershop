@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npx serve . -l 3003"
+    "dev": "npx serve . -l 3003",
+    "deploy": "bash scripts/deploy.sh"
   }
 }
