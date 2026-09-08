@@ -30,6 +30,13 @@
 
   try {
     var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    /* Skip the whole curtain on reduced motion, data-saver, or a slow
+       connection: CRO fold budget wins over the reveal moment. */
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var slowNet = !!(conn && (conn.saveData || /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '')));
+    if (RM.matches || slowNet) { bail(); return; }
+
     var params = new URLSearchParams(window.location.search);
     var skin = params.get('loader');
     if (['1', '2', '3'].indexOf(skin) === -1) skin = '2';
@@ -75,22 +82,15 @@
 
     /* ---------- Real-asset manifest ----------
        Weights = actual KB on disk, so progress ≈ bytes landed.
-       Preloading here also warms the cache: the lazy-loaded
-       gallery/barber images below the fold appear instantly. */
+       CRO pass 1: this used to force-fetch every gallery/barber JPG at
+       full res on load, 1.9MB of below-the-fold weight the visitor
+       never asked for, and it blew the page-weight budget. Track only
+       what actually loads above the fold; gallery/barber portraits keep
+       their real loading="lazy" behaviour untouched. */
     var ASSETS = [
-      { src: 'img/hero-1.jpg',        w: 196 },
-      { src: 'img/barber-rashad.jpg', w: 16  },
-      { src: 'img/barber-elmin-v7.jpg', w: 56 },
-      { src: 'img/barber-mustafa.jpg', w: 72 },
-      { src: 'img/barber-duo.jpg',    w: 24  },
-      { src: 'img/gallery-vk-1.jpg',  w: 324 },
-      { src: 'img/gallery-vk-2.jpg',  w: 168 },
-      { src: 'img/gallery-vk-3.jpg',  w: 208 },
-      { src: 'img/gallery-vk-4.jpg',  w: 260 },
-      { src: 'img/gallery-vk-5.jpg',  w: 536 },
-      { src: 'img/gallery-vk-6.jpg',  w: 460 }
+      { src: 'img/hero-1-768.webp', w: 11 }
     ];
-    var FONTS_W = 120; /* Oswald + Lora via Google Fonts */
+    var FONTS_W = 65; /* self-hosted Oswald + Lora, cyrillic subset */
 
     var totalW = FONTS_W;
     var loadedW = 0;
@@ -130,10 +130,10 @@
     /* ---------- Display engine ---------- */
     var REAL_GATE    = 0.9;  /* "site actually ~90% loaded" → release */
     var CREEP_CAP    = 46;   /* the bar waits inside the 40–50 band  */
-    var MIN_SHOW     = 900;  /* fully-cached visits still get a beat  */
-    var HARD_TIMEOUT = 8000; /* stalled network can never trap anyone */
-    var SWEEP_MS     = 650;
-    var HOLD_MS      = 350;  /* the short buffer at 100% */
+    var MIN_SHOW     = 0;    /* CRO fold budget: no artificial floor  */
+    var HARD_TIMEOUT = 260;  /* curtain must clear well inside 500ms  */
+    var SWEEP_MS     = 120;
+    var HOLD_MS      = 0;    /* no buffer hold, every ms counts */
 
     var displayed = 0;
     var sweeping = false;
@@ -197,7 +197,7 @@
 
     /* Belt-and-braces: whatever happens, the site is never trapped behind
        the overlay (covers a stalled rAF in a background tab too) */
-    window.setTimeout(finish, HARD_TIMEOUT + SWEEP_MS + 2000);
+    window.setTimeout(finish, HARD_TIMEOUT + SWEEP_MS + 150);
 
     window.requestAnimationFrame(frame);
   } catch (err) {
