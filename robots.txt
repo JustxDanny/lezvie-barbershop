@@ -1,0 +1,29 @@
+# robots.txt — lezviebarbershop.ru
+
+User-agent: *
+Allow: /
+
+# Yandex-only: collapses tracking-parameter duplicates into one canonical URL.
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&fbclid&gclid&yclid /
+
+# AI crawlers: allowed on purpose. This is a marketing site, and being quotable
+# by YandexGPT / Alisa / ChatGPT is upside for a local business. Flip any line to
+# "Disallow: /" if Rashad changes his mind.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: YandexAdditional
+Allow: /
+
+# No Crawl-delay and no Host directives: both deprecated by Yandex since 2018.
+
+Sitemap: https://lezviebarbershop.ru/sitemap.xml

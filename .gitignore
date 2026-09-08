@@ -3,3 +3,9 @@ node_modules/
 Thumbs.db
 *.log
 .netlify/
+_site/
+AZ/_site/
+
+# Never commit: contains client PII (reg.ru account email, service card id).
+# The GitHub repo is public.
+tasks/
