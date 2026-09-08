@@ -7,6 +7,9 @@
   <meta name="theme-color" content="#1F1C19">
   <meta name="color-scheme" content="light">
   <link rel="canonical" href="https://lezviebarbershop.ru/">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:title" content="ЛЕЗВИЕ · Барбершоп в Ижевске">
   <meta property="og:description" content="Три студии в Ижевске. Стрижка, борода, бритьё опасной бритвой. Ежедневно с 10:00 до 21:00.">
   <meta property="og:type" content="website">
@@ -17,13 +20,17 @@
   <meta name="twitter:card" content="summary_large_image">
   <title>ЛЕЗВИЕ · Барбершоп в Ижевске</title>
 
-  <!-- Preload hero image -->
-  <link rel="preload" as="image" href="img/hero-1.jpg" fetchpriority="high">
+  <!-- Preload hero image (mirrors the <picture> srcset so the browser doesn't double-fetch) -->
+  <link rel="preload" as="image" href="img/hero-1-1280.webp"
+    imagesrcset="img/hero-1-480.webp 480w, img/hero-1-768.webp 768w, img/hero-1-1280.webp 1280w, img/hero-1-1920.webp 1920w"
+    imagesizes="100vw" fetchpriority="high">
 
-  <!-- Google Fonts: Oswald + Lora -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Self-hosted Oswald + Lora (cyrillic + latin subsets, woff2 only),
+       replaces the Google Fonts round trip. Preload the two files that
+       paint above the fold: Oswald for the hero h1, Lora for body copy. -->
+  <link rel="preload" href="fonts/oswald-400-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/lora-400-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -380,8 +387,19 @@
          k.src=r,a.parentNode.insertBefore(k,a)})(window, document,"script",
          "https://mc.yandex.ru/metrika/tag.js", "ym");
          ym(XXXXXXXX, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+         window.LEZVIE_METRICA_ID = XXXXXXXX; // js/main.js reads this for goal calls
        </script>
        <noscript><div><img src="https://mc.yandex.ru/watch/XXXXXXXX" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+
+       3) Microsoft Clarity (optional). Uncomment once Daniel sends a
+          project id: session replay + heatmaps, free tier.
+       <!-- CLARITY-PLACEHOLDER: <script type="text/javascript">
+         (function(c,l,a,r,i,t,y){
+             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+         })(window, document, "clarity", "script", "PROJECT_ID");
+       </script> -->
        ============================================================ -->
 
 </head>
@@ -406,21 +424,54 @@
         <a href="#gallery" class="nav__link">Галерея</a>
         <a href="#locations" class="nav__link">Локации</a>
         <a href="#contact" class="nav__link">Контакты</a>
-        <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="nav__cta">Записаться</a>
+        <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="nav__cta" data-goal="booking_click">Записаться</a>
       </nav>
     </div>
     <span class="nav__progress" aria-hidden="true"></span>
   </header>
 
+  <!-- ====== STICKY MOBILE CTA BAR: visible from first paint at <= 768, no scroll gate ====== -->
+  <div class="sticky-cta" role="navigation" aria-label="Быстрые действия">
+    <a href="tel:+79127574848" class="sticky-cta__btn" data-goal="tel_click" aria-label="Позвонить">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"/></svg>
+      <span>Позвонить</span>
+    </a>
+    <a href="https://t.me/+79127574848" target="_blank" rel="noopener" class="sticky-cta__btn" data-goal="tg_click" aria-label="Telegram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 3.5 2.7 11c-.9.4-.9 1.6.1 1.9l4.7 1.5 1.8 5.8c.2.7 1.1.9 1.6.4l2.6-2.6 4.9 3.6c.7.5 1.7.1 1.9-.7l3.2-15.4c.2-1-.7-1.8-1.6-1.4zM8.6 13.3l9.1-5.7c.3-.2.6.2.3.4l-7.4 6.9-.3 3.3-1.5-4.9z"/></svg>
+      <span>Telegram</span>
+    </a>
+    <a href="https://dikidi.net/g313100?p=0.sp" rel="noopener" class="sticky-cta__btn sticky-cta__btn--primary" data-goal="booking_click">Записаться</a>
+  </div>
+
   <!-- ====== HERO ====== -->
   <!-- PLACEHOLDER -->
   <section class="hero" id="hero">
-    <div class="hero__bg" style="background-image: url('img/hero-1.jpg')"></div>
+    <picture class="hero__bg">
+      <source type="image/avif" srcset="img/hero-1-480.avif 480w, img/hero-1-768.avif 768w, img/hero-1-1280.avif 1280w, img/hero-1-1920.avif 1920w" sizes="100vw">
+      <source type="image/webp" srcset="img/hero-1-480.webp 480w, img/hero-1-768.webp 768w, img/hero-1-1280.webp 1280w, img/hero-1-1920.webp 1920w" sizes="100vw">
+      <img class="hero__img" src="img/hero-1-1280.webp" alt="" fetchpriority="high" decoding="async" width="1920" height="1280">
+    </picture>
     <div class="hero__overlay"></div>
     <div class="hero__content">
       <h1 class="hero__tagline" id="heroTagline">
         Точность в каждом движении
       </h1>
+
+      <!-- 2GIS rating unreadable from the public page without a browser session
+           (bot-check redirect): link only, no invented number. -->
+      <a href="https://2gis.ru/izhevsk/firm/70000001038561940/tab/reviews" target="_blank" rel="noopener" class="hero__reviews-link" data-goal="reviews_click" data-animate="fade-in" data-delay="1.2">Отзывы на 2ГИС →</a>
+
+      <!-- Mobile fold CTA: desktop already has the nav bar's "Записаться".
+           Visible only at <= 768 (see .hero__mobile-cta media query). -->
+      <div class="hero__mobile-cta">
+        <a href="https://dikidi.net/g313100?p=0.sp" rel="noopener" class="hero__mobile-book" data-goal="booking_click">Записаться онлайн</a>
+        <p class="hero__mobile-meta">3 студии · ежедневно 10:00&ndash;21:00 · стрижка от 1000 ₽</p>
+        <div class="hero__mobile-row">
+          <a href="tel:+79127574848" class="hero__mobile-outline" data-goal="tel_click">Позвонить</a>
+          <a href="https://t.me/+79127574848" target="_blank" rel="noopener" class="hero__mobile-outline" data-goal="tg_click">Telegram</a>
+        </div>
+        <a href="https://2gis.ru/izhevsk/firm/70000001038561940/tab/reviews" target="_blank" rel="noopener" class="hero__mobile-reviews" data-goal="reviews_click">Отзывы на 2ГИС →</a>
+      </div>
     </div>
     <div class="hero__scroll-indicator" data-animate="fade-in" data-delay="1.5">
       <a href="#services" class="hero__scroll-link">
@@ -510,7 +561,10 @@
         <div class="barbers__portrait" data-animate="curtain" data-delay="0.1" data-io="0.25">
           <div class="barbers__frame">
             <div class="barbers__img-wrap">
-              <img src="img/barber-rashad.jpg" alt="Рашад, владелец и барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="294" height="272">
+              <picture>
+                <source srcset="img/barber-rashad.webp" type="image/webp">
+                <img src="img/barber-rashad.jpg" alt="Рашад, владелец и барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="294" height="272">
+              </picture>
             </div>
           </div>
           <span class="barbers__name">Рашад</span>
@@ -518,7 +572,10 @@
         <div class="barbers__portrait" data-animate="curtain" data-delay="0.18" data-io="0.25">
           <div class="barbers__frame">
             <div class="barbers__img-wrap">
-              <img src="img/barber-elmin-v7.jpg" alt="Эльмин, барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="492" height="656">
+              <picture>
+                <source srcset="img/barber-elmin-v7.webp" type="image/webp">
+                <img src="img/barber-elmin-v7.jpg" alt="Эльмин, барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="492" height="656">
+              </picture>
             </div>
           </div>
           <span class="barbers__name">Эльмин</span>
@@ -526,7 +583,10 @@
         <div class="barbers__portrait" data-animate="curtain" data-delay="0.26" data-io="0.25">
           <div class="barbers__frame">
             <div class="barbers__img-wrap">
-              <img src="img/barber-mustafa.jpg" alt="Мустафа, барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="670" height="634">
+              <picture>
+                <source srcset="img/barber-mustafa.webp" type="image/webp">
+                <img src="img/barber-mustafa.jpg" alt="Мустафа, барбер ЛЕЗВИЕ" loading="lazy" decoding="async" width="670" height="634">
+              </picture>
             </div>
           </div>
           <span class="barbers__name">Мустафа</span>
@@ -535,7 +595,10 @@
         <div class="barbers__portrait" data-animate="curtain" data-delay="0.34" data-io="0.25">
           <div class="barbers__frame">
             <div class="barbers__img-wrap">
-              <img src="img/barber-duo.jpg" alt="Барберы ЛЕЗВИЕ на Барышникова 27" loading="lazy" decoding="async" width="437" height="467">
+              <picture>
+                <source srcset="img/barber-duo.webp" type="image/webp">
+                <img src="img/barber-duo.jpg" alt="Барберы ЛЕЗВИЕ на Барышникова 27" loading="lazy" decoding="async" width="437" height="467">
+              </picture>
             </div>
           </div>
           <span class="barbers__name">Команда</span>
@@ -563,7 +626,7 @@
 
       <div class="reviews__progress" id="reviewsProgress" aria-hidden="true"><span></span></div>
 
-      <a href="https://2gis.ru/izhevsk/firm/70000001038561940/tab/reviews" target="_blank" rel="noopener" class="reviews__all" data-animate="fade-up" data-delay="0.2">
+      <a href="https://2gis.ru/izhevsk/firm/70000001038561940/tab/reviews" target="_blank" rel="noopener" class="reviews__all" data-goal="reviews_click" data-animate="fade-up" data-delay="0.2">
         Читать все отзывы на 2ГИС
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
@@ -599,6 +662,10 @@
             <h3 class="locations__name">ЛЕЗВИЕ на Барышникова</h3>
             <p class="locations__address">ул. Барышникова 27</p>
             <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+            <div class="locations__links">
+              <a href="https://yandex.ru/maps/?text=Ижевск%2C%20ул.%20Барышникова%2027" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">Яндекс Карты</a>
+              <a href="https://2gis.ru/izhevsk/firm/70000001038561940" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">2ГИС</a>
+            </div>
           </div>
           <div class="locations__map" id="map1" data-lat="56.87251" data-lon="53.29868" data-address="Ижевск, ул. Барышникова 27"></div>
         </div>
@@ -608,6 +675,10 @@
             <h3 class="locations__name">ЛЕЗВИЕ на Пушкинской</h3>
             <p class="locations__address">ул. Пушкинская 270</p>
             <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+            <div class="locations__links">
+              <a href="https://yandex.ru/maps/?text=Ижевск%2C%20ул.%20Пушкинская%20270" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">Яндекс Карты</a>
+              <a href="https://2gis.ru/izhevsk/firm/70000001038561940" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">2ГИС</a>
+            </div>
           </div>
           <div class="locations__map" id="map2" data-lat="56.86417" data-lon="53.20924" data-address="Ижевск, ул. Пушкинская 270"></div>
         </div>
@@ -617,6 +688,10 @@
             <h3 class="locations__name">ЛЕЗВИЕ на Красноармейской</h3>
             <p class="locations__address">ул. Красноармейская 164</p>
             <p class="locations__hours">С 10:00 до 21:00, ежедневно</p>
+            <div class="locations__links">
+              <a href="https://yandex.ru/maps/?text=Ижевск%2C%20ул.%20Красноармейская%20164" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">Яндекс Карты</a>
+              <a href="https://2gis.ru/izhevsk/firm/70000001038561940" target="_blank" rel="noopener" class="locations__link" data-goal="route_click">2ГИС</a>
+            </div>
           </div>
           <div class="locations__map" id="map3" data-lat="56.84555" data-lon="53.20970" data-address="Ижевск, ул. Красноармейская 164"></div>
         </div>
@@ -630,7 +705,8 @@
       <h2 class="cta__title" data-animate="chars" data-split="chars" data-io="0.35">ТВОЙ ХОД</h2>
       <p class="cta__subtitle" data-animate="fade-up" data-delay="0.45">Выбери удобный способ связи</p>
 
-      <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="cta__button" data-magnetic data-animate="rise" data-delay="0.6">ЗАПИСАТЬСЯ</a>
+      <a href="https://dikidi.net/g313100?p=0.sp" target="_blank" rel="noopener" class="cta__button" data-magnetic data-goal="booking_click" data-animate="rise" data-delay="0.6">Записаться онлайн · 2 минуты</a>
+      <a href="tel:+79127574848" class="cta__tel" data-goal="tel_click" data-animate="fade-up" data-delay="0.66">или позвони: +7 912 757-48-48</a>
 
       <div class="cta__socials">
         <a href="https://vk.com/lezvie_barbershop" target="_blank" rel="noopener" class="cta__social" aria-label="ВКонтакте" data-animate="rise" data-delay="0.7">
@@ -639,10 +715,10 @@
         <a href="https://www.instagram.com/lezvie_barbershop.izhevsk/" target="_blank" rel="noopener" class="cta__social" aria-label="Instagram" data-animate="rise" data-delay="0.76">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
         </a>
-        <a href="https://t.me/+79127574848" target="_blank" rel="noopener" class="cta__social" aria-label="Telegram" data-animate="rise" data-delay="0.82">
+        <a href="https://t.me/+79127574848" target="_blank" rel="noopener" class="cta__social" aria-label="Telegram" data-goal="tg_click" data-animate="rise" data-delay="0.82">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
         </a>
-        <a href="https://wa.me/79127574848" target="_blank" rel="noopener" class="cta__social" aria-label="WhatsApp" data-animate="rise" data-delay="0.88">
+        <a href="https://wa.me/79127574848" target="_blank" rel="noopener" class="cta__social" aria-label="WhatsApp" data-goal="wa_click" data-animate="rise" data-delay="0.88">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         </a>
       </div>
@@ -655,8 +731,8 @@
     <div class="container footer__inner">
       <p class="footer__tagline" data-animate="fade-up" data-delay="0.15">Стрижка, к которой возвращаются</p>
       <div class="footer__contacts" data-animate="fade-up" data-delay="0.21">
-        <a href="tel:+79127574848" class="footer__phone">+7-912-757-48-48</a>
-        <a href="tel:+79120261010" class="footer__phone">+7-912-026-10-10</a>
+        <a href="tel:+79127574848" class="footer__phone" data-goal="tel_click">+7-912-757-48-48</a>
+        <a href="tel:+79120261010" class="footer__phone" data-goal="tel_click">+7-912-026-10-10</a>
       </div>
       <div class="footer__socials" data-animate="fade-up" data-delay="0.27">
         <a href="https://vk.com/lezvie_barbershop" target="_blank" rel="noopener" aria-label="ВКонтакте">
@@ -676,11 +752,12 @@
     </div>
   </footer>
 
-  <!-- Yandex Maps API -->
-  <script src="https://api-maps.yandex.ru/2.1/?apikey=none&lang=ru_RU" defer></script>
+  <!-- Yandex Maps API loads on demand, from main.js, when #locations
+       nears the viewport (IntersectionObserver, rootMargin 200px). No
+       eager script tag here: it was the heaviest asset on the page. -->
 
-  <script src="js/main.js"></script>
-  <script src="js/gallery.js"></script>
-  <script src="js/reviews.js"></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/gallery.js" defer></script>
+  <script src="js/reviews.js" defer></script>
 </body>
 </html>

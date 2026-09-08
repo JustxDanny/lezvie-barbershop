@@ -615,10 +615,16 @@ html.js body.is-ready .nav {
 .hero__bg {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  display: block;
   animation: kenburns 32s ease-in-out infinite alternate;
   will-change: transform;
+}
+
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Focus pull waits for body.is-ready — pre-blurred until then */
@@ -1228,6 +1234,10 @@ html.no-at-property .services__row--birthday .beam {
   opacity: 0.55;
 }
 
+.barbers__img-wrap picture {
+  display: contents;
+}
+
 .barbers__img-wrap img {
   width: 100%;
   height: 100%;
@@ -1669,6 +1679,10 @@ html.js .gallery__item-inner[data-animate="zoom-in"] {
   opacity: 1;
 }
 
+.gallery__item picture {
+  display: contents;
+}
+
 .gallery__item img {
   width: 100%;
   height: 100%;
@@ -1936,6 +1950,29 @@ html.js .locations__card[data-animate].visible:active {
   font-weight: 500;
 }
 
+.locations__links {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.locations__link {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.35);
+  padding-bottom: 2px;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+
+.locations__link:hover {
+  color: var(--color-gold-light);
+  border-color: var(--color-gold-light);
+}
+
 .locations__map {
   min-height: 200px; /* -20% per Daniel */
   background-color: #2A2421;
@@ -1989,6 +2026,20 @@ html.js .cta__title:not(.visible) .char {
   font-size: 1.15rem;
   color: rgba(232, 228, 222, 0.6);
   margin-bottom: 2.5rem;
+}
+
+.cta__tel {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(232, 228, 222, 0.6);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cta__tel:hover {
+  color: var(--color-gold);
 }
 
 .cta__button {
@@ -2260,9 +2311,182 @@ html.js .cta__social[aria-disabled="true"][data-animate].visible {
 }
 
 /* ============================================================
+   HERO MOBILE FOLD CTA: hidden on desktop, the nav bar already
+   carries "Записаться" there. Visible from first paint, no scroll
+   or animation gate: CRO fold budget wins over the reveal moment.
+   ============================================================ */
+.hero__reviews-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.35);
+}
+
+.hero__reviews-link:hover {
+  color: var(--color-gold-light);
+}
+
+@media (max-width: 768px) {
+  /* the mobile CTA block carries its own reviews link below the fold buttons */
+  .hero__reviews-link {
+    display: none;
+  }
+}
+
+.hero__mobile-reviews {
+  display: block;
+  margin-top: 0.75rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  color: var(--color-gold);
+  text-decoration: none;
+}
+
+.hero__mobile-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero__mobile-cta {
+    display: block;
+    margin-top: 1.75rem;
+  }
+}
+
+.hero__mobile-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 24px;
+  background-color: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  box-shadow: var(--shadow-accent);
+}
+
+.hero__mobile-book:active {
+  background-color: var(--color-accent-hover);
+}
+
+.hero__mobile-meta {
+  margin-top: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(250, 248, 244, 0.75);
+}
+
+.hero__mobile-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.hero__mobile-outline {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid rgba(250, 248, 244, 0.5);
+  color: var(--color-bg-light);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.hero__mobile-outline:active {
+  background-color: rgba(250, 248, 244, 0.12);
+}
+
+/* ============================================================
+   STICKY MOBILE CTA BAR: fixed bottom, visible from first paint
+   at <= 768, hidden while the burger menu is open.
+   ============================================================ */
+.sticky-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sticky-cta {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    gap: 8px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    background-color: #1A1510;
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  body.menu-open .sticky-cta {
+    display: none;
+  }
+}
+
+.sticky-cta__btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  border-radius: 2px;
+  border: 1px solid rgba(250, 248, 244, 0.3);
+  color: var(--color-bg-light);
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.sticky-cta__btn--primary {
+  flex: 1.4;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta { transition: none; }
+}
+
+@media (max-width: 480px) {
+  /* the CTA wins the fold space; the scroll hint is a nicety, not a job */
+  .hero__scroll-indicator {
+    display: none;
+  }
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 767px) {
+  body {
+    /* clears the fixed sticky CTA bar so the footer never sits under it */
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+
   .nav__burger {
     display: flex;
   }
