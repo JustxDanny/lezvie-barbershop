@@ -18,12 +18,12 @@
 
   /* Default gallery images — real shots from the shop's VK */
   var DEFAULT_IMAGES = [
-    { src: 'img/gallery-vk-1.jpg', alt: 'Фейд, чистая работа' },
-    { src: 'img/gallery-vk-2.jpg', alt: 'Классический фейд с бородой' },
-    { src: 'img/gallery-vk-3.jpg', alt: 'Помпадур' },
-    { src: 'img/gallery-vk-4.jpg', alt: 'Бритьё опасной бритвой' },
-    { src: 'img/gallery-vk-5.jpg', alt: 'Мастер за работой' },
-    { src: 'img/gallery-vk-6.jpg', alt: 'Медали чемпионата, команда ЛЕЗВИЕ' }
+    { src: 'img/gallery-vk-1.jpg', webp: 'img/gallery-vk-1.webp', w: 589,  h: 784,  alt: 'Фейд, чистая работа' },
+    { src: 'img/gallery-vk-2.jpg', webp: 'img/gallery-vk-2.webp', w: 640,  h: 853,  alt: 'Классический фейд с бородой' },
+    { src: 'img/gallery-vk-3.jpg', webp: 'img/gallery-vk-3.webp', w: 640,  h: 853,  alt: 'Помпадур' },
+    { src: 'img/gallery-vk-4.jpg', webp: 'img/gallery-vk-4.webp', w: 420,  h: 746,  alt: 'Бритьё опасной бритвой' },
+    { src: 'img/gallery-vk-5.jpg', webp: 'img/gallery-vk-5.webp', w: 1200, h: 1405, alt: 'Мастер за работой' },
+    { src: 'img/gallery-vk-6.jpg', webp: 'img/gallery-vk-6.webp', w: 1080, h: 1440, alt: 'Медали чемпионата, команда ЛЕЗВИЕ' }
   ];
 
   /* Parallax speeds per item (varied for depth) */
@@ -137,16 +137,26 @@
       inner.setAttribute('data-animate', 'zoom-in');
       inner.setAttribute('data-delay', String(ANIM_DELAYS[i % ANIM_DELAYS.length]));
 
+      var pictureEl = document.createElement('picture');
+
+      if (img.webp) {
+        var sourceEl = document.createElement('source');
+        sourceEl.srcset = img.webp;
+        sourceEl.type = 'image/webp';
+        pictureEl.appendChild(sourceEl);
+      }
+
       var imgEl = document.createElement('img');
       imgEl.src = img.src;
       imgEl.alt = img.alt || 'Фото ' + (i + 1);
       imgEl.loading = 'lazy';
       imgEl.decoding = 'async';
       imgEl.draggable = false;
-      imgEl.width  = 800;
-      imgEl.height = 600;
+      imgEl.width  = img.w || 800;
+      imgEl.height = img.h || 600;
 
-      inner.appendChild(imgEl);
+      pictureEl.appendChild(imgEl);
+      inner.appendChild(pictureEl);
       item.appendChild(inner);
 
       // Keyboard access — cursor:zoom-in advertises interactivity, so keyboard

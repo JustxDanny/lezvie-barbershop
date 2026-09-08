@@ -283,6 +283,7 @@
       navMenu.classList.remove('open');
       navBurger.classList.remove('active');
       navBurger.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open'); /* hides the sticky CTA bar */
       document.body.style.overflow = '';
     }
 
@@ -290,6 +291,7 @@
       var isOpen = navMenu.classList.toggle('open');
       navBurger.classList.toggle('active', isOpen);
       navBurger.setAttribute('aria-expanded', String(isOpen));
+      document.body.classList.toggle('menu-open', isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
@@ -466,42 +468,58 @@
       map.behaviors.disable('scrollZoom');
     }
 
-    function init() {
-      if (typeof ymaps === 'undefined') {
-        mapEls.forEach(fallback);
-        return;
-      }
+    function whenReady() {
+      var obs = new IntersectionObserver(function (entries, o) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            buildMap(e.target);
+            o.unobserve(e.target);
+          }
+        });
+      }, { rootMargin: '200px 0px' });
 
-      ymaps.ready(function () {
-        var obs = new IntersectionObserver(function (entries, o) {
-          entries.forEach(function (e) {
-            if (e.isIntersecting) {
-              buildMap(e.target);
-              o.unobserve(e.target);
-            }
-          });
-        }, { rootMargin: '200px 0px' });
-
-        mapEls.forEach(function (el) { obs.observe(el); });
-      });
+      mapEls.forEach(function (el) { obs.observe(el); });
     }
 
-    // Wait for ymaps script (loaded with defer); poll briefly if not ready
-    if (typeof ymaps !== 'undefined') {
-      init();
-    } else {
-      var tries = 0;
-      var poll = setInterval(function () {
-        tries++;
+    function loadYmapsScript() {
+      if (typeof ymaps !== 'undefined') { ymaps.ready(whenReady); return; }
+      if (document.getElementById('ymaps-script')) return; // already injected once
+
+      var s = document.createElement('script');
+      s.id = 'ymaps-script';
+      s.src = 'https://api-maps.yandex.ru/2.1/?apikey=none&lang=ru_RU';
+      s.onload = function () {
         if (typeof ymaps !== 'undefined') {
-          clearInterval(poll);
-          init();
-        } else if (tries > 40) { // 4s
-          clearInterval(poll);
+          ymaps.ready(whenReady);
+        } else {
           mapEls.forEach(fallback);
         }
-      }, 100);
+      };
+      s.onerror = function () { mapEls.forEach(fallback); };
+      document.head.appendChild(s);
+
+      // Belt-and-braces: a stalled/blocked request never traps the fallback text
+      window.setTimeout(function () {
+        if (typeof ymaps === 'undefined') mapEls.forEach(fallback);
+      }, 6000);
     }
+
+    // Static fallback text shows immediately; the real map (and its 689KB
+    // API) loads only once #locations is ~200px from entering the viewport.
+    mapEls.forEach(fallback);
+
+    var locationsSection = document.getElementById('locations');
+    if (!locationsSection) { loadYmapsScript(); return; }
+
+    var sectionObs = new IntersectionObserver(function (entries, o) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          o.disconnect();
+          loadYmapsScript();
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+    sectionObs.observe(locationsSection);
   }
 
   /* ==========================================================
@@ -727,6 +745,53 @@
   }
 
   /* ==========================================================
+     7b. GOAL TRACKING: delegated clicks -> Metrica reachGoal.
+     Inert until window.LEZVIE_METRICA_ID is set (the Metrica
+     snippet stays commented out in index.html until Daniel
+     supplies the counter id). Never throws when Metrica is absent.
+     ========================================================== */
+  function initGoalTracking() {
+    var METRICA_ID = window.LEZVIE_METRICA_ID || null;
+
+    function resolveGoal(a) {
+      if (a.dataset && a.dataset.goal) return a.dataset.goal;
+      var href = a.getAttribute('href') || '';
+      if (href.indexOf('tel:') === 0) return 'tel_click';
+      if (href.indexOf('t.me') !== -1) return 'tg_click';
+      if (href.indexOf('wa.me') !== -1) return 'wa_click';
+      if (href.indexOf('dikidi.net') !== -1) return 'booking_click';
+      if (href.indexOf('2gis.ru') !== -1) return 'reviews_click';
+      if (href.indexOf('yandex.ru/maps') !== -1) return 'route_click';
+      return null;
+    }
+
+    // One explicit reachGoal call per goal (not a single dynamic call) so
+    // each conversion event stays greppable and debuggable on its own line.
+    function fireGoal(goal) {
+      if (typeof ym !== 'function' || !METRICA_ID) return;
+      try {
+        if (goal === 'booking_click') ym(METRICA_ID, 'reachGoal', 'booking_click');
+        else if (goal === 'tel_click') ym(METRICA_ID, 'reachGoal', 'tel_click');
+        else if (goal === 'tg_click') ym(METRICA_ID, 'reachGoal', 'tg_click');
+        else if (goal === 'wa_click') ym(METRICA_ID, 'reachGoal', 'wa_click');
+        else if (goal === 'reviews_click') ym(METRICA_ID, 'reachGoal', 'reviews_click');
+        else if (goal === 'route_click') ym(METRICA_ID, 'reachGoal', 'route_click');
+      } catch (err) { /* a broken goal call must never break navigation */ }
+    }
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest(
+        'a[data-goal], a[href^="tel:"], a[href*="t.me"], a[href*="wa.me"], ' +
+        'a[href*="dikidi.net"], a[href*="2gis.ru"], a[href*="yandex.ru/maps"]'
+      );
+      if (!a) return;
+      var goal = resolveGoal(a);
+      if (!goal) return;
+      fireGoal(goal);
+    }, { passive: true });
+  }
+
+  /* ==========================================================
      8. BODY REVEAL
      ========================================================== */
   function revealBody() {
@@ -756,9 +821,9 @@
     initBeamPause();
     initServiceRows();
     initPriceTickers();
+    initMaps();
+    initGoalTracking();
     revealBody();
   });
-
-  window.addEventListener('load', initMaps);
 
 })();
